@@ -5,3 +5,7 @@ target/
 .project
 .settings/
 
+miglayout15-swing.jar
+jgoodies-forms-1.8.0-sources.jar
+jgoodies-forms-1.8.0.jar
+miglayout-src.zip
