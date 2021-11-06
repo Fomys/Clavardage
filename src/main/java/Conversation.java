@@ -6,6 +6,7 @@ import javax.swing.GroupLayout.Alignment;
 public class Conversation {
 	
 	private JFrame frame; // window principale 
+	private JTextField textField;
 
 	/**
 	 * Launch the application.
@@ -41,7 +42,7 @@ public class Conversation {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new GridLayout(0, 2, 0, 0));
 		
-		
+		// on divise la fenetre en 2 (gauche / droite) 
 		JPanel Gauche = new JPanel();
 		frame.getContentPane().add(Gauche);
 		Gauche.setLayout(new GridLayout(2, 1, 0, 0));
@@ -50,19 +51,15 @@ public class Conversation {
 		frame.getContentPane().add(Droite);
 		Droite.setLayout(new GridLayout(2, 1, 0, 0));
 		
-		
+		// on divise les côtés en 2 aussi (haut / bas) 
 		JPanel panel_profil = new JPanel();
 		Gauche.add(panel_profil);
 		panel_profil.setBackground(Color.GREEN);
-		
+
 		JPanel panel_users = new JPanel();
 		Gauche.add(panel_users);
 		panel_users.setBackground(Color.CYAN);
-		Droite.setLayout(new GridLayout(0, 1, 0, 0));
-		
-
-		
-				
+			
 		JPanel panel_conv = new JPanel();
 		Droite.add(panel_conv);
 		panel_conv.setBackground(Color.RED);
@@ -70,9 +67,22 @@ public class Conversation {
 		JPanel panel_text = new JPanel();
 		Droite.add(panel_text);
 		panel_text.setBackground(Color.YELLOW);
+		panel_profil.setLayout(null);
 		
+		// Affichage profil HAUT GAUCHE 
+		textField = new JTextField();
+		textField.setBounds(104, 6, 130, 26);
+		panel_profil.add(textField);
+		textField.setColumns(10);
 		
+		JButton btnChangeNick = new JButton("Change nickname");
+		btnChangeNick.setBackground(Color.LIGHT_GRAY);
+		btnChangeNick.setForeground(Color.BLACK);
+		btnChangeNick.setBounds(239, 5, 156, 29);
+		panel_profil.add(btnChangeNick);
 	
+		
+		
 		
 	}
 }
