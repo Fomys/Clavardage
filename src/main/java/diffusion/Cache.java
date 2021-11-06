@@ -53,7 +53,7 @@ public class Cache {
                 if(this.directory.containsKey(((ChangeNicknameMessage) message).getNickname())) {
                     LOGGER.warning(message.getAddress() + " tries to use an already used nickname ");
                 } else {
-                    this.directory.put(((ChangeNicknameMessage) message).getNickname(), message.getAddress());
+                    this.directory.forcePut(((ChangeNicknameMessage) message).getNickname(), message.getAddress());
                     LOGGER.info("New nickname for " + message.getAddress());
                 }
             }

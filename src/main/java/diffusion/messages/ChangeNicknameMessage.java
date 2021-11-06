@@ -22,8 +22,8 @@ public class ChangeNicknameMessage extends Message {
         [2:nickname_len] = nickname
          */
         super(packet);
-        int nickname_len = packet.getData()[1];
-        this.nickname = new String(Arrays.copyOfRange(packet.getData(), 2, 2+nickname_len), StandardCharsets.UTF_8);
+        byte nickname_len = packet.getData()[1];
+        this.nickname = new String(Arrays.copyOfRange(packet.getData(), 2, 130+(int)nickname_len), StandardCharsets.UTF_8);
     }
 
     public String getNickname() {
@@ -35,7 +35,7 @@ public class ChangeNicknameMessage extends Message {
         byte[] buffer = new byte[PACKET_LEN];
         buffer[0] = this.kind.to_byte();
         byte[] nickname_buffer = this.nickname.getBytes(StandardCharsets.UTF_8);
-        buffer[1] = (byte) min(nickname_buffer.length, 254);
+        buffer[1] = (byte) (min(nickname_buffer.length, 254)-128);
         System.arraycopy(nickname_buffer, 0, buffer, 2, min(nickname_buffer.length, 254));
         DatagramPacket packet = new DatagramPacket(buffer, PACKET_LEN);
         packet.setAddress(this.address);
