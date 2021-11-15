@@ -1,15 +1,15 @@
-package diffusion.messages;
+package diffusion.packets;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 
-public abstract class Message {
+public abstract class Packet {
     protected final int port;
     protected final InetAddress address;
     public int PACKET_LEN = 256;
-    protected final MessageKind kind;
+    protected final PacketKind kind;
 
-    public MessageKind getKind() {
+    public PacketKind getKind() {
         return kind;
     }
 
@@ -21,13 +21,13 @@ public abstract class Message {
         return port;
     }
 
-    public enum MessageKind {
+    public enum PacketKind {
         Connect,
         Disconnect,
         ChangeNickname,
         Illegal;
 
-        private static MessageKind from_byte(byte value) {
+        private static PacketKind from_byte(byte value) {
             switch (value) {
                 default -> {
                     return Illegal;
@@ -62,31 +62,31 @@ public abstract class Message {
         }
     }
 
-    public Message(MessageKind kind, InetAddress address, int port) {
+    public Packet(PacketKind kind, InetAddress address, int port) {
         this.kind = kind;
         this.address = address;
         this.port = port;
     }
 
-    public Message(DatagramPacket packet) {
-        this.kind = MessageKind.from_byte(packet.getData()[0]);
+    public Packet(DatagramPacket packet) {
+        this.kind = PacketKind.from_byte(packet.getData()[0]);
         this.address = packet.getAddress();
         this.port = packet.getPort();
     }
 
-    public static Message from_packet(DatagramPacket packet) {
-        switch (MessageKind.from_byte(packet.getData()[0])) {
+    public static Packet from_packet(DatagramPacket packet) {
+        switch (PacketKind.from_byte(packet.getData()[0])) {
             case Connect -> {
-                return new ConnectMessage(packet);
+                return new ConnectPacket(packet);
             }
             case Disconnect -> {
-                return new DisconnectMessage(packet);
+                return new DisconnectPacket(packet);
             }
             case ChangeNickname -> {
-                return new ChangeNicknameMessage(packet);
+                return new ChangeNicknamePacket(packet);
             }
             default -> {
-                return new IllegalMessage(packet);
+                return new IllegalPacket(packet);
             }
         }
     }

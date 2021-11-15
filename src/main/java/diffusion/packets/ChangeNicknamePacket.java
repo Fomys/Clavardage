@@ -1,4 +1,4 @@
-package diffusion.messages;
+package diffusion.packets;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -7,15 +7,15 @@ import java.util.Arrays;
 
 import static java.lang.Math.min;
 
-public class ChangeNicknameMessage extends Message {
+public class ChangeNicknamePacket extends Packet {
     private final String nickname;
 
-    public ChangeNicknameMessage(String nickname, InetAddress address, int port) {
-        super(MessageKind.ChangeNickname, address, port);
+    public ChangeNicknamePacket(String nickname, InetAddress address, int port) {
+        super(PacketKind.ChangeNickname, address, port);
         this.nickname = nickname;
     }
 
-    public ChangeNicknameMessage(DatagramPacket packet) {
+    public ChangeNicknamePacket(DatagramPacket packet) {
         /*
         [0] = 0x03
         [1] = nickname_len (<= 254)
