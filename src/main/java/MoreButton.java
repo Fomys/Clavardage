@@ -6,7 +6,7 @@
 
 import javax.swing.*;
 
-public class ButtonsInScrollPane{
+public class MoreButton{
 
     public static void main(String[] args){
         JFrame frame = new JFrame();

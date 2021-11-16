@@ -1,8 +1,13 @@
-import java.awt.EventQueue;
-
 import javax.swing.* ; 
 import java.awt.* ;
-import javax.swing.GroupLayout.Alignment; 
+import javax.swing.GroupLayout.Alignment;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import net.miginfocom.swing.MigLayout;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.layout.FormSpecs; 
 public class Conversation {
 	
 	private JFrame frame; // window principale 
@@ -31,7 +36,7 @@ public class Conversation {
 		initialize();
 	}
 
-	/**
+	/*
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
@@ -51,6 +56,7 @@ public class Conversation {
 		frame.getContentPane().add(Droite);
 		Droite.setLayout(new GridLayout(2, 1, 0, 0));
 		
+		
 		// on divise les côtés en 2 aussi (haut / bas) 
 		JPanel panel_profil = new JPanel();
 		Gauche.add(panel_profil);
@@ -61,28 +67,391 @@ public class Conversation {
 		panel_users.setBackground(Color.CYAN);
 			
 		JPanel panel_conv = new JPanel();
-		Droite.add(panel_conv);
+		JScrollPane scrollMessages = new JScrollPane(panel_conv);
+		Droite.add(scrollMessages);
 		panel_conv.setBackground(Color.RED);
+	    GridBagLayout gbl_panel_conv = new GridBagLayout();
+	    panel_conv.setLayout(gbl_panel_conv);
 		
 		JPanel panel_text = new JPanel();
 		Droite.add(panel_text);
 		panel_text.setBackground(Color.YELLOW);
-		panel_profil.setLayout(null);
+		panel_text.setLayout(new GridLayout(0, 1, 0, 0));
 		
 		// Affichage profil HAUT GAUCHE 
 		textField = new JTextField();
+		textField.setEditable(false);
 		textField.setBounds(104, 6, 130, 26);
 		panel_profil.add(textField);
 		textField.setColumns(10);
 		
 		JButton btnChangeNick = new JButton("Change nickname");
+		btnChangeNick.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if (btnChangeNick.getText() == "OK") { // si on veut valider le changement 
+					System.out.println("On valide le changement"); 
+					textField.setEditable(false);
+					btnChangeNick.setText("Change nickname"); 
+				}
+				else if (btnChangeNick.getText() == "Change nickname") { // si on veut changer le nickname 
+					System.out.println("On veut changer de pseudo la ");
+					textField.setEditable(true);
+					// il faut aussi check la disponibilité 
+					btnChangeNick.setText("OK"); 
+				}
+				
+			}
+		});
 		btnChangeNick.setBackground(Color.LIGHT_GRAY);
 		btnChangeNick.setForeground(Color.BLACK);
 		btnChangeNick.setBounds(239, 5, 156, 29);
 		panel_profil.add(btnChangeNick);
 	
 		
+		// Affichage liste utilisateur BAS GAUCHE 
 		
+		DefaultListModel demoList = new DefaultListModel(); // liste des utilisateurs 
+		for (int i = 0; i < 10 ; i ++) {
+			demoList.addElement("addElements");}
+		panel_users.setLayout(new GridLayout(0, 1, 0, 0));
+		
+		JList listUsers = new JList(demoList); // là où on affiche la liste 
+		
+		JPanel panel = new JPanel(); // le panel qui stocke les boutons new et del 
+		panel_users.add(panel);
+		panel.setLayout(new GridLayout(0, 2, 0, 0));
+		
+		JButton btnNewUser = new JButton("New user"); // bouton new 
+		panel.add(btnNewUser);
+		btnNewUser.setBackground(Color.CYAN);
+		btnNewUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Add user");
+				demoList.addElement("OUI");
+			}
+		});
+
+		JButton btnDelUser = new JButton("Delete user"); // bouton del 
+		panel.add(btnDelUser);
+		btnDelUser.setBackground(Color.RED);
+		btnDelUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Suppr user"); 
+				int selectedElement = listUsers.getSelectedIndex() ;  
+				if (selectedElement != -1) { // si on essaye de supprimer sans selectioner, il ne se passe rien 
+					demoList.remove(selectedElement);
+				}
+				
+			}
+		});
+		
+		
+		listUsers.setBounds(250, 58, 59, 53); // list des users 
+		JScrollPane scrollPane = new JScrollPane(listUsers);
+		panel_users.add(scrollPane);
+		
+		
+		
+		// Affichage de la conversation HAUT DROITE 
+		messageText teste = new messageText("oui","oui");
+		JPanel newtest = teste.createComponentGauche(); 
+		  
+		GridBagConstraints contraintes;
+		contraintes = new GridBagConstraints();
+	    contraintes.gridx = 0;
+	    contraintes.gridy = 0;
+	    contraintes.fill = GridBagConstraints.HORIZONTAL;
+	    contraintes.weightx = 1;
+	    contraintes.weighty = 1;
+	    
+	    gbl_panel_conv.setConstraints(newtest, contraintes);
+	    panel_conv.add(newtest); 
+	    
+	    JPanel newtest2 = teste.createComponentDroite(); 
+		  
+		contraintes = new GridBagConstraints();
+	    contraintes.gridx = 0;
+	    contraintes.gridy = 1;
+	    contraintes.fill = GridBagConstraints.HORIZONTAL;
+	    contraintes.weightx = 1;
+	    contraintes.weighty = 1;
+	    
+	    gbl_panel_conv.setConstraints(newtest2, contraintes);
+	    panel_conv.add(newtest2); 
+
+		
+		/*
+		JTextArea texttry = new JTextArea();
+		  
+		GridBagConstraints contraintes;
+
+		contraintes = new GridBagConstraints();
+	    contraintes.gridx = 0;
+	    contraintes.gridy = 0;
+	    contraintes.gridheight = 10;
+	    contraintes.weightx = 0.1;
+	    contraintes.weighty = 1;
+	    gbl_panel_conv.setConstraints(texttry, contraintes);
+	    panel_conv.add(texttry); 
+	    texttry.setBackground(Color.blue);
+	    
+	    JTextArea texteu = new JTextArea();
+	    		
+		contraintes = new GridBagConstraints();
+	    contraintes.gridx = 1;
+	    contraintes.gridy = 0;
+	    contraintes.gridheight = 1;
+	    contraintes.fill = GridBagConstraints.HORIZONTAL;
+	    contraintes.weightx = 0.9;
+	    contraintes.weighty = 0.2;
+	    gbl_panel_conv.setConstraints(texteu, contraintes);
+	    panel_conv.add(texteu); 
+	    texteu.setBackground(Color.green);
+	    		
+	    		
+	    		
+	    JTextArea texteuu = new JTextArea();
+		
+		contraintes = new GridBagConstraints();
+	    contraintes.gridx = 1;
+	    contraintes.gridy = 11;
+	    contraintes.gridheight = 1;
+	    contraintes.fill = GridBagConstraints.HORIZONTAL;
+	    contraintes.weightx = 0.9;
+	    contraintes.weighty = 0.2;
+	    gbl_panel_conv.setConstraints(texteuu, contraintes);
+	    panel_conv.add(texteuu); 
+	    texteuu.setBackground(Color.black);
+	    
+	    
+	    JTextArea texteeuu = new JTextArea();
+		
+		contraintes = new GridBagConstraints();
+	    contraintes.gridx = 1;
+	    contraintes.gridy = 3;
+	    contraintes.gridheight = 1;
+	    contraintes.fill = GridBagConstraints.HORIZONTAL;
+	    contraintes.weightx = 0.9;
+	    contraintes.weighty = 0.2;
+	    gbl_panel_conv.setConstraints(texteeuu, contraintes);
+	    panel_conv.add(texteeuu); 
+	    texteeuu.setBackground(Color.blue);
+	    */
+		
+		/*
+		JButton efface = new JButton("efface");
+	    JButton demarre = new JButton("demarre");
+	    JCheckBox relief = new JCheckBox("relief");
+   	    JCheckBox  gras = new JCheckBox("gras");
+	    JTextArea texte = new JTextArea();
+	    JTextArea texte2 = new JTextArea();
+	    JPanel dessin = new JPanel();
+	    
+	    JTextArea timeSent = new JTextArea("11h43");
+	    timeSent.setEditable(false);
+	    timeSent.setBackground(Color.cyan);
+	    
+		
+	    JTextArea space = new JTextArea();
+	    space.setEditable(false);
+	    space.setBackground(Color.black);
+	    
+	    
+	    JTextArea timeSent2 = new JTextArea("11h43");
+	    timeSent2.setEditable(false);
+	    timeSent2.setBackground(Color.cyan);
+	    
+		
+	    JTextArea space2 = new JTextArea();
+	    space2.setEditable(false);
+	    space2.setBackground(Color.black);
+	    
+	    GridBagConstraints contraintes;
+
+	    
+	    contraintes = new GridBagConstraints();
+	    contraintes.gridx = 0;
+	    contraintes.gridy = 0;
+	    contraintes.gridwidth = 2;
+	    contraintes.gridheight = 2;
+	    contraintes.fill = GridBagConstraints.BOTH;
+	    contraintes.weightx = 1;
+	    contraintes.weighty = 1;
+	    gbl_panel_conv.setConstraints(texte2, contraintes);
+	    panel_conv.add(texte2);
+	    
+	    contraintes = new GridBagConstraints();
+	    contraintes.gridx = 2;
+	    contraintes.gridy = 1;
+	    contraintes.gridwidth = 1;
+	    contraintes.gridheight = 1;
+	    contraintes.ipadx = 40;
+	    gbl_panel_conv.setConstraints(timeSent, contraintes);
+	    panel_conv.add(timeSent);
+	    
+	    contraintes = new GridBagConstraints();
+	    contraintes.gridx = 3;
+	    contraintes.gridy = 1;
+	    contraintes.gridwidth = 1;
+	    contraintes.gridheight = 1;
+	    contraintes.ipadx = 40;
+	    gbl_panel_conv.setConstraints(space, contraintes);
+	    panel_conv.add(space);
+	    
+	    
+	    
+	    
+	  
+	    
+	    contraintes = new GridBagConstraints();
+	    contraintes.gridx = 1;
+	    contraintes.gridy = 2;
+	    contraintes.gridwidth = 2;
+	    contraintes.gridheight = 2;
+	    contraintes.fill = GridBagConstraints.BOTH;
+	    contraintes.weightx = 1;
+	    contraintes.weighty = 1;
+	    gbl_panel_conv.setConstraints(texte, contraintes);
+	    panel_conv.add(texte);
+	    
+	    contraintes = new GridBagConstraints();
+	    contraintes.gridx = 0;
+	    contraintes.gridy = 2;
+	    contraintes.gridwidth = 1;
+	    contraintes.gridheight = 1;
+
+	    contraintes.fill = GridBagConstraints.VERTICAL;
+	    contraintes.ipadx = 40;
+	    gbl_panel_conv.setConstraints(relief, contraintes);
+	    panel_conv.add(relief);
+	    */
+	  
+	 
+	 
+        /*
+        JButton button;
+
+    	GridBagConstraints c = new GridBagConstraints();
+        button = new JButton("Button 1");
+        c.weightx = 0.5;
+        c.gridx = 0;
+        c.gridy = 0;
+        panel_conv.add(button, c);
+
+        button = new JButton("Button 2");
+        c.weightx = 0.5;
+        c.gridx = 1;
+        c.gridy = 0;
+        panel_conv.add(button, c);
+
+        button = new JButton("Button 3");
+        c.weightx = 0.5;
+        c.gridx = 2;
+        c.gridy = 0;
+        panel_conv.add(button, c);
+
+        button = new JButton("Long-Named Button 4");
+        c.ipady = 40;      //make this component tall
+        c.weightx = 0.0;
+        c.gridwidth = 3;
+        c.gridx = 0;
+        c.gridy = 1;
+        panel_conv.add(button, c);
+        */
+	      
+		
+		
+        /*
+        JButton button;
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL ; 
+        panel_conv.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+
+        JTextArea textArea = new JTextArea("testArea"); 
+        c.weightx = 0.75 ; 
+        c.gridwidth = 2 ; 
+        c.gridx = 0 ; 
+        c.gridy = 3 ; 
+        panel_conv.add(textArea, c);
+        	        
+        JTextArea textArea2 = new JTextArea("testArea2"); 
+        textArea2.setBackground(Color.RED);
+        c.weightx = 0.25 ; 
+        c.gridwidth = 2 ; 
+        c.gridx = 1 ; 
+        c.gridy = 3 ; 
+        panel_conv.add(textArea2, c);
+		               
+        JTextArea textArea20 = new JTextArea("testArea"); 
+        c.weightx = 0.75 ; 
+        c.gridwidth = 2 ; 
+        c.gridx = 2 ; 
+        c.gridy = 4; 
+        panel_conv.add(textArea20, c);
+
+        JTextArea textArea23 = new JTextArea("testArea2"); 
+        textArea23.setBackground(Color.RED);
+        c.weightx = 0.25 ; 
+        c.gridwidth = 5 ; 
+        c.gridx = 0 ; 
+        c.gridy = 4 ; 
+        panel_conv.add(textArea23, c);       
+		*/
+        
+        
+
+        /*
+        JButton button;
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL ; 
+       
+		panel_conv.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        JTextArea textArea = new JTextArea("testArea"); 
+        c.weightx = 0.75 ; 
+        c.gridwidth = 2 ; 
+        c.gridx = 0 ; 
+        c.gridy = 3 ; 
+        panel_conv.add(textArea, c);
+
+		panel_conv.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        JTextArea textArea20 = new JTextArea("testArea"); 
+        c.weightx = 0.75 ; 
+        c.gridwidth = 2 ; 
+        c.gridx = 2 ; 
+        c.gridy = 4; 
+        panel_conv.add(textArea20, c);
+        */
+        
+
+		
+
+	 
+		
+		// Affichage du message à envoyer BAS DROITE 
+		
+		JTextArea textMsg = new JTextArea(); // zone d'écriture du message scrollable 
+		textMsg.setLineWrap(true);
+		JScrollPane scrollText = new JScrollPane (textMsg);
+		panel_text.add(scrollText);
+		
+		
+		JButton btnSendMsg = new JButton("Send Message"); // bouton d'envoi 
+		btnSendMsg.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("On envoie le message : " + textMsg.getText()); 
+
+
+				
+				
+				textMsg.setText("");
+
+			
+			}
+		});
+		panel_text.add(btnSendMsg);
 		
 	}
 }
