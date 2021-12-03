@@ -37,7 +37,7 @@ public class user {
 
 	@Override
 	public String toString() {
-	    return this.name + " : " + this.lastMsg ; 
+	    return this.name ; 
 	}
 	
 }

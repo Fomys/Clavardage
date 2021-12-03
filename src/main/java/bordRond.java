@@ -55,6 +55,10 @@ public class bordRond {
 	public int height_box = 100; 
 	public int width_box = 200; 
 	
+	public class PanelRond extends JPanel {
+		
+	}
+
 	/*
 	 * Pour créer panel arrondi 
 	 */
@@ -72,9 +76,7 @@ public class bordRond {
 		        //Draws the rounded opaque panel with borders.
 		        graphics.setColor(getBackground());
 		        graphics.fillRoundRect(0, 0, width-1, height-1, arcs.width*2, arcs.height*2);//paint background
-		        graphics.setColor(getForeground());
-
-		        System.out.println(width + " "+  height);
+		        graphics.setColor(Color.blue);
 		        graphics.drawRoundRect(0, 0, width-1, height-1, arcs.width*2, arcs.height*2);//paint border
 		     }
 		  };
@@ -101,7 +103,6 @@ public class bordRond {
 	  frame.setSize(500, 500);
 	  
 	  JPanel p = PanelTexte() ; 
-	  
 	  p.setBounds(16,6,width_box,height_box);
 	  p.setOpaque(false);
 	  frame.getContentPane().setBackground(Color.red);
