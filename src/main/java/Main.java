@@ -1,31 +1,17 @@
 import database.Database;
 import database.Message;
 import diffusion.Diffusion;
+import gui.MainWindow;
 import messages.MessageServer;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class Main {
-    private static final Logger LOGGER = Logger.getLogger( Main.class.getName() );
-    private static final LogManager LOG_MANAGER = LogManager.getLogManager();
-    static {
-        try {
-            LOG_MANAGER.readConfiguration(new FileInputStream("log.properties"));
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Cannot read configuration file", e);
-        }
-    }
     public static void main(String[] args) throws Exception {
         Database database = new Database();
         database.applyMigrations();
@@ -35,6 +21,8 @@ public class Main {
         MessageServer message_server = new MessageServer(10001, database);
         diffusion.start();
         message_server.start();
+
+        //MainWindow window = new MainWindow(database);
 
         boolean running = true;
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -61,6 +49,11 @@ public class Main {
                     }
                 }
                 case "/send" -> {if (cli_args.length >= 3) message_server.sendMessageTo(new Message(String.join(" ", Arrays.copyOfRange(cli_args, 2, cli_args.length))), cli_args[1]);}
+                case "/request" -> {
+                    if (cli_args.length >= 2) {
+                        message_server.requestMessagesSince(new Date(0), cli_args[1]);
+                    }
+                }
             }
         }
     }

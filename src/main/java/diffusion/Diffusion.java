@@ -18,6 +18,7 @@ public class Diffusion extends Thread {
     private final Database database;
 
     public Diffusion(int port, Database database) throws Exception {
+        super("Diffusion");
         this.socket = new DatagramSocket(port, Inet4Address.getByAddress(new byte[] {0,0,0,0}));
         this.socket.setBroadcast(true);
         this.database = database;

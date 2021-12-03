@@ -4,4 +4,4 @@ target/
 .DS_Store
 .project
 .settings/
-
+*.sqlite3

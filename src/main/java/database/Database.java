@@ -8,17 +8,15 @@ import diffusion.packets.Packet;
 import java.net.InetAddress;
 import java.sql.*;
 import java.util.*;
-
-import org.reflections.*;
+import java.util.Date;
 
 public class Database {
-    private final HashMap<String, ArrayList<Message>> messages;
     private final BiMap<String, InetAddress> directory;
     private final BiMap<InetAddress, String> reverse_directory;
     private final Map<InetAddress, Boolean> connected;
     private final Connection database;
     private String nickname;
-
+    private final List<DatabaseObserver> observers;
 
     public BiMap<String, InetAddress> getDirectory() {
         return this.directory;
@@ -33,7 +31,7 @@ public class Database {
     }
 
     public Database() throws SQLException {
-        this.messages = new HashMap<>();
+        this.observers = new ArrayList<>();
         this.directory = HashBiMap.create();
         this.reverse_directory = this.directory.inverse();
         this.connected = new HashMap<>();
@@ -91,6 +89,14 @@ public class Database {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        this.notifyNewMessage(message);
+    }
+
+    private void notifyNewMessage(Message message) {
+        for (DatabaseObserver observer:
+                this.observers) {
+            observer.on_message(message);
+        }
     }
 
     public List<Message> getMessagesFor(String nickname) {
@@ -100,6 +106,26 @@ public class Database {
                     "FROM messages WHERE `from` = ? OR `to` = ?;");
             statement.setString(1, nickname);
             statement.setString(2, nickname);
+            ResultSet request_result = statement.executeQuery();
+            while (request_result.next()) {
+                results.add(new Message(request_result.getString("from"), request_result.getString("to"), request_result.getString("message"), request_result.getDate("date")));
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return results;
+    }
+
+    public synchronized List<Message> getMessagesFor(String nickname, Date since) {
+        List<Message> results = new ArrayList<>();
+        try {
+            PreparedStatement statement = this.database.prepareStatement("SELECT `from`, `to`, `message`, `date` " +
+                    "FROM messages WHERE (`from` = ? OR `to` = ?) AND `date` >= ? ORDER BY `date`;");
+            statement.setString(1, nickname);
+            statement.setString(2, nickname);
+            statement.setDate(3, new java.sql.Date(since.getTime()));
+            java.sql.Date a = new java.sql.Date(since.getTime());
             ResultSet request_result = statement.executeQuery();
             while (request_result.next()) {
                 results.add(new Message(request_result.getString("from"), request_result.getString("to"), request_result.getString("message"), request_result.getDate("date")));
@@ -127,5 +153,10 @@ public class Database {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        this.notifyNewMessage(message);
+    }
+
+    public void addObserver(DatabaseObserver observer) {
+        this.observers.add(observer);
     }
 }
