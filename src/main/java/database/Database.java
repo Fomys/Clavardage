@@ -72,11 +72,14 @@ public class Database {
                         "`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
                         "`from` TEXT, " +
                         "`to` TEXT, " +
-                        "`message` TEXT)");
-                stmt.executeUpdate("INSERT INTO `migrations` VALUES (1)");
+                        "`message` TEXT);");
+                stmt.executeUpdate("INSERT INTO `migrations` VALUES (1);");
             case 1:
                 stmt.executeUpdate("ALTER TABLE `messages` ADD COLUMN `date` DATE;");
-                stmt.executeUpdate("INSERT INTO `migrations` VALUES (2)");
+                stmt.executeUpdate("INSERT INTO `migrations` VALUES (2);");
+            case 2:
+                stmt.executeUpdate("ALTER TABLE `messages` ADD COLUMN `uuid` CHAR(36);");
+                stmt.executeUpdate("INSERT INTO `migrations` VALUES (3);");
             default:
         }
     }
@@ -102,13 +105,19 @@ public class Database {
     public List<Message> getMessagesFor(String nickname) {
         List<Message> results = new ArrayList<>();
         try {
-            PreparedStatement statement = this.database.prepareStatement("SELECT `from`, `to`, `message`, `date` " +
+            PreparedStatement statement = this.database.prepareStatement("SELECT `uuid`, `from`, `to`, `message`, `date` " +
                     "FROM messages WHERE `from` = ? OR `to` = ?;");
             statement.setString(1, nickname);
             statement.setString(2, nickname);
             ResultSet request_result = statement.executeQuery();
             while (request_result.next()) {
-                results.add(new Message(request_result.getString("from"), request_result.getString("to"), request_result.getString("message"), request_result.getDate("date")));
+                results.add(new Message(
+                        request_result.getString("from"),
+                        request_result.getString("to"),
+                        request_result.getString("message"),
+                        request_result.getDate("date"),
+                        UUID.nameUUIDFromBytes(request_result.getBytes("uuid"))
+                ));
             }
 
         } catch (SQLException throwables) {
@@ -117,18 +126,23 @@ public class Database {
         return results;
     }
 
-    public synchronized List<Message> getMessagesFor(String nickname, Date since) {
+    public  List<Message> getMessagesFor(String nickname, Date since) {
         List<Message> results = new ArrayList<>();
         try {
-            PreparedStatement statement = this.database.prepareStatement("SELECT `from`, `to`, `message`, `date` " +
+            PreparedStatement statement = this.database.prepareStatement("SELECT `uuid`, `from`, `to`, `message`, `date` " +
                     "FROM messages WHERE (`from` = ? OR `to` = ?) AND `date` >= ? ORDER BY `date`;");
             statement.setString(1, nickname);
             statement.setString(2, nickname);
             statement.setDate(3, new java.sql.Date(since.getTime()));
-            java.sql.Date a = new java.sql.Date(since.getTime());
             ResultSet request_result = statement.executeQuery();
             while (request_result.next()) {
-                results.add(new Message(request_result.getString("from"), request_result.getString("to"), request_result.getString("message"), request_result.getDate("date")));
+                results.add(new Message(
+                        request_result.getString("from"),
+                        request_result.getString("to"),
+                        request_result.getString("message"),
+                        request_result.getDate("date"),
+                        UUID.nameUUIDFromBytes(request_result.getBytes("uuid"))
+                ));
             }
 
         } catch (SQLException throwables) {

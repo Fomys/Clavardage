@@ -26,7 +26,7 @@ public class Client extends Thread {
         this.input_stream = new ObjectInputStream(this.socket.getInputStream());
     }
 
-    synchronized public void disconnect() {
+    public void disconnect() {
         this.running = false;
     }
 
@@ -35,7 +35,8 @@ public class Client extends Thread {
         Packet packet;
         while(this.running) {
             try {
-                 packet = (Packet) input_stream.readObject();
+                System.out.println("Wait packet");
+                packet = (Packet) input_stream.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
                 break;
@@ -49,7 +50,7 @@ public class Client extends Thread {
         }
     }
 
-    synchronized void packetHandler(Packet packet) {
+    void packetHandler(Packet packet) {
         System.out.println(packet);
         switch (packet.getKind()) {
             case Message -> messageHandler((MessagePacket) packet);
@@ -58,14 +59,12 @@ public class Client extends Thread {
         }
     }
 
-    synchronized private void requestMessagesSinceHandler(RequestMessagesPacket packet) {
+    private void requestMessagesSinceHandler(RequestMessagesPacket packet) {
         List<Message> messages = this.database.getMessagesFor(this.database.getReverseDirectory().get(this.socket.getInetAddress()), packet.getSince());
         for (Message message : messages) {
             try {
                 System.out.println("Envoi du message demandé: " + message);
-                synchronized (this.output_stream) {
-                    this.output_stream.writeObject(new MessagePacket(message));
-                }
+                this.output_stream.writeObject(new MessagePacket(message));
             } catch (IOException e) {
                 System.out.println("Erreur de message: " + e);
                 e.printStackTrace();
@@ -74,16 +73,16 @@ public class Client extends Thread {
 
     }
 
-    synchronized void messageHandler(MessagePacket packet) {
+    void messageHandler(MessagePacket packet) {
         this.database.receiveMessageFor(this.socket.getInetAddress(), packet.getMessage());
     }
 
-    synchronized void sendMessage(Message message) throws IOException {
+    void sendMessage(Message message) throws IOException {
         this.database.sendMessageTo(this.socket.getInetAddress(), message);
         this.output_stream.writeObject(new MessagePacket(message));
     }
 
-    synchronized public void requestMessagesSince(Date since) throws IOException {
+    public void requestMessagesSince(Date since) throws IOException {
         System.out.println("Requesting messages since " + since);
         this.output_stream.writeObject(new RequestMessagesPacket(since));
     }

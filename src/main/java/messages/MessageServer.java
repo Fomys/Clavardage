@@ -23,42 +23,43 @@ public class MessageServer extends Thread {
         this.clients = new HashMap<>();
     }
 
-    synchronized public void disconnect() {
+     public void disconnect() {
         this.running = false;
         for (Client client: this.clients.values()) {
             client.disconnect();
         }
     }
 
-    synchronized private Client getClient(InetAddress to) throws IOException {
+     private Client getClient(InetAddress to) throws IOException {
         if(this.clients.containsKey(to)) {
             return this.clients.get(to);
         } else if(this.database.getConnected().getOrDefault(to, false)) {
             Socket client_socket = new Socket(to, this.socket.getLocalPort());
             Client client = new Client(client_socket, this.database);
             this.clients.put(to, client);
+            client.start();
             return client;
         } else {
             return null;
         }
     }
 
-    synchronized public void requestMessagesSince(Date since, String to) throws IOException {
+     public void requestMessagesSince(Date since, String to) throws IOException {
         this.requestMessagesSince(since, this.database.getDirectory().get(to));
     }
 
-    synchronized public void requestMessagesSince(Date since, InetAddress to) throws IOException {
+     public void requestMessagesSince(Date since, InetAddress to) throws IOException {
         Client client = this.getClient(to);
         if(client != null) {
             client.requestMessagesSince(since);
         }
     }
 
-    synchronized public void sendMessageTo(Message message, String to) throws IOException {
+     public void sendMessageTo(Message message, String to) throws IOException {
         this.sendMessageTo(message, this.database.getDirectory().get(to));
     }
 
-    synchronized public void sendMessageTo(Message message, InetAddress to) throws IOException {
+     public void sendMessageTo(Message message, InetAddress to) throws IOException {
         Client client = this.getClient(to);
         if(client != null) {
             client.sendMessage(message);
@@ -79,8 +80,8 @@ public class MessageServer extends Thread {
             Client new_client = null;
             try {
                 new_client = new Client(client_socket, this.database);
-                new_client.start();
                 this.clients.put(client_socket.getInetAddress(), new_client);
+                new_client.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

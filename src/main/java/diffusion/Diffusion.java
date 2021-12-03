@@ -56,6 +56,7 @@ public class Diffusion extends Thread {
                 ChangeNicknamePacket change_nickname_message = new ChangeNicknamePacket(this.database.getNickname(), packet.getAddress(), packet.getPort());
                 try {
                     this.socket.send(change_nickname_message.to_packet());
+                    // TODO: envoyer paquet de changement refusé
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
