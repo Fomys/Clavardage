@@ -1,4 +1,4 @@
-package test; 
+package test.testForListUser ; 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -83,18 +83,13 @@ public class JListCustomRendererExample implements Runnable {
         public Component getListCellRendererComponent(JList<? extends Country> list, 
                 Country country, int index, boolean isSelected, boolean cellHasFocus) {
 
-        	label.setLayout(null);
+        	
             label.setIcon(new ImageIcon(country.getImage()));
             label.setText(country.getName());
-            JButton test = new JButton("test"); 
+            label.setLayout(null);
+            JButton test = country.getButton(); 
             test.setBounds(10,10,50,50);
             label.add(test); 
-            JButton test2 = new JButton("test"); 
-            test2.setBounds(100,10,50,50);
-            label.add(test2); 
-            JButton test3 = new JButton("test"); 
-            test3.setBounds(200,10,50,50);
-            label.add(test3); 
             
 
             if (isSelected) {
@@ -114,14 +109,14 @@ public class JListCustomRendererExample implements Runnable {
         private final DefaultListModel<Country> listModel;
 
         public CountryModel() {
-            Country us = new Country("USA", "1");
-            Country in = new Country("India", "2");
-            Country vn = new Country("Vietnam", "3");
-            Country ca = new Country("Canada", "4");
-            Country de = new Country("Denmark", "5");
-            Country fr = new Country("France", "6");
-            Country gb = new Country("Great Britain", "7");
-            Country jp = new Country("Japan", "8");
+            Country us = new Country("USA", "1", "A");
+            Country in = new Country("India", "2","b");
+            Country vn = new Country("Vietnam", "3","c");
+            Country ca = new Country("Canada", "4","d");
+            Country de = new Country("Denmark", "5","e");
+            Country fr = new Country("France", "6","f");
+            Country gb = new Country("Great Britain", "7","g");
+            Country jp = new Country("Japan", "8","h");
 
             // create the model and add elements
             listModel = new DefaultListModel<>();
@@ -147,17 +142,27 @@ public class JListCustomRendererExample implements Runnable {
          
         private final String name;
         private final String code;
+        private final String letter ; 
+        
+        private JButton button ; 
      
-        public Country(String name, String code) {
+        public Country(String name, String code, String letter) {
             this.name = name;
             this.code = code;
             this.image = getImage(code);
+            this.letter = letter ; 
+            this.button = getButton(name); 
+            
+        }
+        
+        public String getLetter() {
+        	return this.letter ; 
         }
         
         private Image getImage(String code) {
             Image image = null;
             try {
-                URL url = getClass().getResource("./images/" + code + "1.png");
+                URL url = getClass().getResource("./images/little_empty.png");
                 image = ImageIO.read(url);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -165,6 +170,15 @@ public class JListCustomRendererExample implements Runnable {
             return image;
         }
      
+        private JButton getButton(String name) {
+        	JButton button = new JButton(name); 
+        	return button ; 
+        }
+        
+        public JButton getButton() {
+        	return button ; 
+        }        
+        
         public String getName() {
             return name;
         }
@@ -172,6 +186,9 @@ public class JListCustomRendererExample implements Runnable {
         public String getCode() {
             return code;
         }
+        
+       
+
         
         public Image getImage() {
             return image;

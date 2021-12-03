@@ -3,7 +3,7 @@
 /*
  * GridBagLayoutDemo.java requires no other files.
  */
- 
+package test.GridBagLayoutCode ; 
 import java.awt.*;
 import javax.swing.JButton;
 import javax.swing.JFrame;

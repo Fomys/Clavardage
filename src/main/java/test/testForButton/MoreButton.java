@@ -3,7 +3,7 @@
  * Liste utilisateur 
  * https://stackoverflow.com/questions/33894580/scrollable-list-with-items-of-set-pixel-height-in-java-swing
  */ 
-
+package test.testForButton ; 
 import javax.swing.*;
 
 public class MoreButton{

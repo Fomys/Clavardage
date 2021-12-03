@@ -1,3 +1,5 @@
+package composants ; 
+
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 

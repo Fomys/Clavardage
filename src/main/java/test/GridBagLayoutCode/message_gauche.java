@@ -1,3 +1,4 @@
+package test.GridBagLayoutCode ; 
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.EventQueue;

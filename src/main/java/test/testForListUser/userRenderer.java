@@ -1,3 +1,4 @@
+package test.testForListUser ; 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -41,7 +42,7 @@ public class userRenderer extends JLabel implements ListCellRenderer<user> {
 		this.setFont(new Font(police, Font.PLAIN, taillePolice));
 		this.setBorder(new LineBorder(new Color(80,80,80)));
 		
-		
+		/*
 		ButtonIcon button = null;
 		try {
 			button = new ButtonIcon("./images/profil.png",30, 20,14);
@@ -60,6 +61,7 @@ public class userRenderer extends JLabel implements ListCellRenderer<user> {
 		
 		SousJText txth = new SousJText(this, user.getHourlast(),(int) (width*0.793), (int) (height*0.15), (int) (width * 0.187), (int) (height * 0.43), false, true);
 		this.add(txth);
+		*/
     	
         return this;
         

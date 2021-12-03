@@ -1,3 +1,4 @@
+import composants.* ; 
 
 import java.awt.event.*;
 import java.io.IOException;
@@ -174,45 +175,45 @@ public class MainWindow {
         frame.setMinimumSize(new Dimension(450, 400));
 		frame.getContentPane().setLayout(null);
 		
-		// panel principaux (Gauche / Droite) 
-		JPanel Gauche = new JPanel();
-		Gauche.setBounds(0, 0, 350, 572);
-		Gauche.setBackground(gris_gauche);
-		frame.getContentPane().add(Gauche);
-		Gauche.setLayout(null);
+		// panel principaux (gauche / droite) 
+		JPanel gauche = new JPanel();
+		gauche.setBounds(0, 0, 350, 572);
+		gauche.setBackground(gris_gauche);
+		frame.getContentPane().add(gauche);
+		gauche.setLayout(null);
 		
-		JPanel Droite = new JPanel();
-		Droite.setBounds(350, 0, 650, 572);
-		Droite.setBackground(new Color(56,56,56));
-		frame.getContentPane().add(Droite);
-		Droite.setLayout(null);
+		JPanel droite = new JPanel();
+		droite.setBounds(350, 0, 650, 572);
+		droite.setBackground(new Color(56,56,56));
+		frame.getContentPane().add(droite);
+		droite.setLayout(null);
 		
 		/*
 		 * Éléments panel gauche 
 		 */
 
-		SousJPanel panel_profil = new SousJPanel(Gauche, 0,0,-1,50, true); 
-		SousJPanel panel_searchUser = new SousJPanel(Gauche, 0,panel_profil.getNextHauteur(),-1,50, true); // on le fait commencer à la fin du composant précédent 
-		SousJPanel panel_users = new SousJPanel(Gauche, 0,panel_searchUser.getNextHauteur(),-1,panel_searchUser.getHauteurPoss(), true); // on le fait commencer à la fin du composant précédent ET remplir toute la fin 
+		SousJPanel panel_profil = new SousJPanel(gauche, 0,0,-1,50, true); 
+		SousJPanel panel_searchUser = new SousJPanel(gauche, 0,panel_profil.getNextHauteur(),-1,50, true); // on le fait commencer à la fin du composant précédent 
+		SousJPanel panel_users = new SousJPanel(gauche, 0,panel_searchUser.getNextHauteur(),-1,panel_searchUser.getHauteurPoss(), true); // on le fait commencer à la fin du composant précédent ET remplir toute la fin 
 		SousJPanel list_users = new SousJPanel(panel_users, 0,0,-1,-1, true); // on le fait commencer à la fin du composant précédent ET remplir toute la fin 
 		
 		/*
 		 * Éléments panel droite  
 		 */
 		
-		SousJPanel panel_searchMsg = new SousJPanel(Droite, 0,0,-1,50, true); 
+		SousJPanel panel_searchMsg = new SousJPanel(droite, 0,0,-1,50, true); 
 		
 		JPanel panel_conv = new JPanel();
 		panel_conv.setPreferredSize(new Dimension(600, JNewMessage.getHauteur_next()));
 		JScrollPane scrollMessages = new JScrollPane(panel_conv);
 		scrollMessages.setBounds(0, 50, 650, 450);
-		Droite.add(scrollMessages);
+		droite.add(scrollMessages);
 		scrollMessages.setBorder(null);
 		panel_conv.setBackground(gris_noir);
 		panel_conv.setAutoscrolls(true);
 		panel_conv.setLayout(null);
 	
-		SousJPanel panel_text = new SousJPanel(Droite, 0,500,-1,-1, true); 
+		SousJPanel panel_text = new SousJPanel(droite, 0,500,-1,-1, true); 
 		panel_text.setBackground(gris_noir);
 		panel_text.setBorder(null);
 		
@@ -229,7 +230,7 @@ public class MainWindow {
 		txtPseudo.setHighlighter(null);
 		panel_profil.add(txtPseudo);
 		
-		ButtonIcon btnRename = new ButtonIcon("./images/write.png", 25, 307, 14);
+		ButtonIcon btnRename = new ButtonIcon("./../images/write.png", 25, 307, 14);
 		panel_profil.add(btnRename);
 		btnRename.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -273,7 +274,7 @@ public class MainWindow {
 		searchUser.setBorder(new LineBorder(gris_composant,2,true));
 		panel_searchUser.add(searchUser) ; 
 		
-		ButtonIcon btnSearchIcon = new ButtonIcon("./images/search.png", 18, 9, 9);
+		ButtonIcon btnSearchIcon = new ButtonIcon("./../images/search.png", 18, 9, 9);
 		searchUser.add(btnSearchIcon);
 		btnSearchIcon.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -296,7 +297,7 @@ public class MainWindow {
 	    });
 		searchUser.add(txtSearchUser);
 		
-		ButtonIcon btnCrossIcon = new ButtonIcon("./images/cross.png", 18, 303, 10);
+		ButtonIcon btnCrossIcon = new ButtonIcon("./../images/cross.png", 18, 303, 10);
 		searchUser.add(btnCrossIcon);
 		btnCrossIcon.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -393,7 +394,7 @@ public class MainWindow {
 	        }
 	    });
 		
-		ButtonIcon btnSettings = new ButtonIcon("./images/settings.png", 25, 600, 14);
+		ButtonIcon btnSettings = new ButtonIcon("./../images/settings.png", 25, 600, 14);
 		panel_searchMsg.add(btnSettings);
 		btnSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -473,8 +474,8 @@ public class MainWindow {
                 System.out.println("Window Resized: " + frame.getSize());
                 
                 // panels gauche et droite 
-                pourcentage(Gauche, 0,0, 350,572) ; 
-                pourcentage(Droite, 350, 0, 650, 572); 
+                pourcentage(gauche, 0,0, 350,572) ; 
+                pourcentage(droite, 350, 0, 650, 572); 
                 
                 // panels gauche  
                 //pourcentage(panel_profil, 0, 0, 350, 70); 
@@ -514,8 +515,8 @@ public class MainWindow {
                 pourcentage(btnAutreMsg, 580, 50, 60, 20); 
              
                 
-                Gauche.updateUI();
-                Droite.updateUI();
+                gauche.updateUI();
+                droite.updateUI();
             }
         }) ; 
 	}

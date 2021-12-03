@@ -1,3 +1,5 @@
+package composants ; 
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -45,7 +47,7 @@ public class JLabelSpe extends JPanel{
 		this.setMaximumSize(new Dimension(width,height));
 		this.setMinimumSize(getMaximumSize());
 		
-		ButtonIcon button = new ButtonIcon("./images/profil.png", 30, 20,14); 
+		ButtonIcon button = new ButtonIcon("./../images/profil.png", 30, 20,14); 
 		this.add(button);
 		
 		// on appelle la classe spéciale créée pour économiser le code 
