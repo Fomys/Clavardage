@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Main {
+
     public static void main(String[] args) throws Exception {
         Database database = new Database();
         database.applyMigrations();
@@ -22,7 +23,7 @@ public class Main {
         diffusion.start();
         message_server.start();
 
-        //MainWindow window = new MainWindow(database);
+        MainWindow window = new MainWindow(database);
 
         boolean running = true;
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));

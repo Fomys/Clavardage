@@ -54,7 +54,10 @@ public class Database {
                     this.connected.put(packet.getAddress(), true);
                 }
                 if (!this.directory.containsKey(((ChangeNicknamePacket) packet).getNickname())) {
-                    this.directory.forcePut(((ChangeNicknamePacket) packet).getNickname(), packet.getAddress());
+                    if(this.directory.forcePut(((ChangeNicknamePacket) packet).getNickname(), packet.getAddress()) == null) {
+                        this.notify_new_user(((ChangeNicknamePacket) packet).getNickname());
+                    }
+                    this.notify_connect_user(((ChangeNicknamePacket) packet).getNickname());
                 }
             }
         }
@@ -92,13 +95,34 @@ public class Database {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        this.notifyNewMessage(message);
+        this.notify_new_message(message);
     }
 
-    private void notifyNewMessage(Message message) {
+    private void notify_new_message(Message message) {
         for (DatabaseObserver observer:
                 this.observers) {
             observer.on_message(message);
+        }
+    }
+
+    private void notify_new_user(String username) {
+        for (DatabaseObserver observer:
+                this.observers) {
+            observer.on_new_user(username);
+        }
+    }
+
+    private void notify_disconnect_user(String username) {
+        for (DatabaseObserver observer:
+                this.observers) {
+            observer.on_disconnect_user(username);
+        }
+    }
+
+    private void notify_connect_user(String username) {
+        for (DatabaseObserver observer:
+                this.observers) {
+            observer.on_connect_user(username);
         }
     }
 
@@ -167,7 +191,7 @@ public class Database {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        this.notifyNewMessage(message);
+        this.notify_new_message(message);
     }
 
     public void addObserver(DatabaseObserver observer) {
