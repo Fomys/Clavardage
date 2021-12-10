@@ -24,6 +24,7 @@ public class MainWindow {
         this.main_frame.getContentPane().add(this.main_panel);
         this.main_frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.main_frame.pack();
+        this.main_panel.setDoubleBuffered(true);
         this.main_frame.setVisible(true);
     }
 }

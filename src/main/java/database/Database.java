@@ -48,15 +48,17 @@ public class Database {
             case Disconnect -> {
                 this.reverse_directory.remove(packet.getAddress());
                 this.connected.put(packet.getAddress(), false);
+                // TODO: envoyer la déconnection
             }
             case ChangeNickname -> {
                 if(!this.connected.getOrDefault(packet.getAddress(), false)) {
                     this.connected.put(packet.getAddress(), true);
                 }
                 if (!this.directory.containsKey(((ChangeNicknamePacket) packet).getNickname())) {
-                    if(this.directory.forcePut(((ChangeNicknamePacket) packet).getNickname(), packet.getAddress()) == null) {
-                        this.notify_new_user(((ChangeNicknamePacket) packet).getNickname());
+                    if (this.directory.containsKey(((ChangeNicknamePacket) packet).getNickname())) {
+                        this.notify_disconnect_user(((ChangeNicknamePacket) packet).getNickname());
                     }
+                    this.directory.forcePut(((ChangeNicknamePacket) packet).getNickname(), packet.getAddress());
                     this.notify_connect_user(((ChangeNicknamePacket) packet).getNickname());
                 }
             }
@@ -99,20 +101,15 @@ public class Database {
     }
 
     private void notify_new_message(Message message) {
+        System.out.println("New message: " + message);
         for (DatabaseObserver observer:
                 this.observers) {
             observer.on_message(message);
         }
     }
 
-    private void notify_new_user(String username) {
-        for (DatabaseObserver observer:
-                this.observers) {
-            observer.on_new_user(username);
-        }
-    }
-
     private void notify_disconnect_user(String username) {
+        System.out.println("Disconnect user: " + username);
         for (DatabaseObserver observer:
                 this.observers) {
             observer.on_disconnect_user(username);
@@ -120,6 +117,7 @@ public class Database {
     }
 
     private void notify_connect_user(String username) {
+        System.out.println("Connect user: " + username);
         for (DatabaseObserver observer:
                 this.observers) {
             observer.on_connect_user(username);

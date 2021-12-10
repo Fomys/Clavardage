@@ -20,6 +20,8 @@ public class Main {
 
         Diffusion diffusion = new Diffusion(10000, database);
         MessageServer message_server = new MessageServer(10001, database);
+
+
         diffusion.start();
         message_server.start();
 

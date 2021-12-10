@@ -31,8 +31,8 @@ public class Diffusion extends Thread {
     }
 
     public void setNickname(String nickname) throws IOException {
-        ChangeNicknamePacket connect_message = new ChangeNicknamePacket(nickname, BROADCAST_ADDRESS, this.socket.getLocalPort());
         this.database.setNickname(nickname);
+        ChangeNicknamePacket connect_message = new ChangeNicknamePacket(nickname, BROADCAST_ADDRESS, this.socket.getLocalPort());
         this.socket.send(connect_message.to_packet());
     }
 

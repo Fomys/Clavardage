@@ -21,7 +21,7 @@ import javax.swing.*;
 public class UserList extends JPanel implements DatabaseObserver {
     private JScrollPane scroll_pane;
     private JPanel internal_panel;
-    private HashMap<String, JLabelSpe> users;
+    private HashMap<String, JLabel> users;
     private Database database;
 
     public UserList(Database database) {
@@ -32,8 +32,6 @@ public class UserList extends JPanel implements DatabaseObserver {
     }
 
     private void initComponents() {
-        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - unknown
         this.internal_panel = new JPanel();
         this.scroll_pane = new JScrollPane(this.internal_panel);
         this.scroll_pane.createVerticalScrollBar();
@@ -44,27 +42,28 @@ public class UserList extends JPanel implements DatabaseObserver {
         this.add(this.scroll_pane);
     }
 
-    @Override
-    public void on_message(Message message) {}
+
+    private void push_up(JLabel jLabelSpe) {
+        this.internal_panel.setComponentZOrder(jLabelSpe, 0);
+        this.validate();
+    }
+
 
     @Override
-    public void on_new_user(String username) {
-        JLabelSpe new_button = null;
-        try {
-            new_button = new JLabelSpe(username, 200);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        this.users.put(username, new_button);
-        this.internal_panel.add(new_button);
-        this.validate();
+    public void on_message(Message message) {
+        // TODO: vérifier que c'est pas cassé
+        this.push_up(this.users.get(message.getFrom()));
     }
 
     @Override
     public void on_connect_user(String username) {
         if(!this.users.containsKey(username)) {
-            this.on_new_user(username);
+            JLabel new_button;
+                new_button = new JLabel(username);
+            this.users.put(username, new_button);
+            this.internal_panel.add(new_button);
         }
+        this.push_up(this.users.get(username));
     }
 
     @Override

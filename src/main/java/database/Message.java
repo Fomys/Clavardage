@@ -62,12 +62,31 @@ public class Message implements Serializable, DatabaseObject {
         ResultSet results = statement.executeQuery();
 
         if(!results.next()) {
-            PreparedStatement insert_statement = connection.prepareStatement("INSERT INTO `messages` (`from`, `to`, `message`, `date`) VALUES (?, ?, ?, ?);");
+            PreparedStatement insert_statement = connection.prepareStatement("INSERT INTO `messages` (`from`, `to`, `message`, `date`, `uuid`) VALUES (?, ?, ?, ?, ?);");
             insert_statement.setString(1, this.from);
             insert_statement.setString(2, this.to);
             insert_statement.setString(3, this.content);
             insert_statement.setDate(4, new java.sql.Date(this.date.getTime()));
+            insert_statement.setString(5, this.uuid.toString());
             insert_statement.execute();
         }
+    }
+
+    public String getFrom() {
+        return this.from;
+    }
+
+    public String getTo() {
+        return this.to;
+    }
+
+    public UUID GetUuid() {return this.uuid;}
+
+    public Date getDate() {
+        return this.date;
+    }
+
+    public String getContent() {
+        return this.content;
     }
 }
