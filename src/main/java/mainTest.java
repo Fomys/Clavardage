@@ -88,13 +88,17 @@ public class mainTest {
 
 	    public MyRoundJText() {
 	        super();
-	        this.setBackground(Color.black);
+	        //this.setBackground(Color.black);
 	        this.setForeground(new Color(160,160,160));
 	    }
 
 	    protected void paintComponent(Graphics g) {
 	         g.setColor(getBackground());
 	         g.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 30, 30);
+
+
+		     Graphics2D graphics = (Graphics2D) g;
+		     //graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	         super.paintComponent(g);
 	    }
 	    protected void paintBorder(Graphics g) {
@@ -110,6 +114,7 @@ public class mainTest {
 
 		         g.setColor(Color.blue);
 	    	}
+	    	
 	         g.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 30,30);
 	    }
 	    public boolean contains(int x, int y) {
@@ -119,6 +124,40 @@ public class mainTest {
 	         return shape.contains(x, y);
 	    }
 	    
+	}
+	
+	public class Prout extends JPanel {
+		@Override
+	     protected void paintComponent(Graphics g) {
+	    	int arc_size = 25 ; 
+	        super.paintComponent(g);
+	        Dimension arcs = new Dimension(arc_size,arc_size);
+	        int width = getWidth();
+	        int height = getHeight();
+	        Graphics2D graphics = (Graphics2D) g;
+	        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+	        //Draws the rounded opaque panel with borders.
+	        graphics.setColor(getBackground());
+	        graphics.fillRoundRect(0, 0, width-1, height-1, arcs.width, (int) (arcs.height*1.5));//paint background
+	        graphics.setColor(getForeground());
+
+	        System.out.println(width + " "+  height);
+	        graphics.drawRoundRect(0, 0, width-1, height-1, arcs.width, (int) (arcs.height*1.5));//paint border
+	     }
+		
+		protected void repaintBorder(Graphics g, boolean focus) {
+	    	System.out.println("oui");
+	    	if (focus) {
+	         g.setColor(Color.red);
+	         }
+	    	else {
+
+		         g.setColor(Color.blue);
+	    	}
+	    	
+	         g.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 30,30);
+	    }
 	}
 	
 	public JPanel PanelTexte() {
@@ -183,23 +222,31 @@ public class mainTest {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 800, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(null);
+		frame.getContentPane().setLayout(null);
 		
-		JPanel p = PanelTexte() ;
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.BLACK);
+		panel.setBounds(134, 206, 401, 266);
+		frame.getContentPane().add(panel);
+		
+		Prout p = new Prout() ;
 		  p.setOpaque(false);
-		  p.setBounds(500,500,200,30);
+		  p.setBounds(200,500,200,30);
 		frame.getContentPane().add(p); 
 		
-		MyRoundJPanel teste = new MyRoundJPanel();  
-		teste.setBounds(500,200,200,30); 
-		teste.setBackground(Color.WHITE);
-		frame.getContentPane().add(teste);
+		MyRoundJText teste = new MyRoundJText();  
+		teste.setBounds(10,10,200,30); 
+		teste.setForeground(Color.WHITE);
+		teste.setBackground(Color.black);
+		panel.add(teste);
+		panel.setLayout(null);
 		
 		
 		JButton button = new JButton("button");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				teste.repaintBorder(teste.getGraphics(), true);
+				p.repaintBorder(p.getGraphics(), true);
 			}
 		});
 		
@@ -218,16 +265,12 @@ public class mainTest {
 		button2.setBackground(Color.yellow); 
 		frame.getContentPane().add(button2); 
 		
-		MyRoundJText text = new MyRoundJText(); 
-		text.setBounds(50,500,100,30);
-		frame.getContentPane().add(text); 
+
+
 		
 		
 		
 	}
-	
-	
-
 }
 
 

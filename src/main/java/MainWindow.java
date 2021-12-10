@@ -72,31 +72,6 @@ public class MainWindow {
 	public MainWindow() throws IOException {
 		initialize();
 	}
-
-	
-	/*
-	 * Création d'un JPanel qui sera arrondi sur les bords 
-	 */
-	public JPanel PanelTexte() {
-		JPanel p = new JPanel() {
-		     @Override
-		     protected void paintComponent(Graphics g) {
-		        super.paintComponent(g);
-		        Dimension arcs = new Dimension(15,15);
-		        int width = getWidth();
-		        int height = getHeight();
-		        Graphics2D graphics = (Graphics2D) g;
-		        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-		        //Draws the rounded opaque panel with borders.
-		        graphics.setColor(getBackground());
-		        graphics.fillRoundRect(0, 0, width-1, height-1, arcs.width*2, arcs.height*2);//paint background
-		        graphics.setColor(getForeground());
-		        graphics.drawRoundRect(0, 0, width-1, height-1, arcs.width*2, arcs.height*2);//paint border
-		     }
-		  };
-		  return p ; 
-	}	
 	
 	/*
 	 * Pour que les cases où on peut rentrer du texte deviennent bleu ou repasse gris et aient un texte de base 
