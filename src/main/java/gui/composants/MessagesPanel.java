@@ -20,8 +20,10 @@ import javax.swing.*;
  */
 public class MessagesPanel extends JPanel implements DatabaseObserver {
     private final Database database;
+
     private final String current_user;
     private ArrayList<MessageDisplay> messages;
+
     private JPanel internal_panel;
     private JScrollPane scroll_pane;
 
@@ -35,6 +37,7 @@ public class MessagesPanel extends JPanel implements DatabaseObserver {
 
     private void addMessage(Message message, boolean left) {
         MessageDisplay message_display = new MessageDisplay(message, left);
+
         if(this.messages.isEmpty()) {
             this.messages.add(message_display);
             this.internal_panel.add(message_display, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
@@ -43,6 +46,7 @@ public class MessagesPanel extends JPanel implements DatabaseObserver {
         } else {
             int i = 0;
             while(i < this.messages.size() && this.messages.get(i).getMessage().getDate().before(message.getDate())) { i += 1; }
+
             this.messages.add(i, message_display);
             this.internal_panel.add(message_display, new GridBagConstraints(0, i, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,

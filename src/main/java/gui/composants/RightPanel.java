@@ -33,7 +33,6 @@ public class RightPanel extends JPanel {
         this.split_pane.setResizeWeight(0.8);
 
         this.split_pane.setTopComponent(this.messages_panel);
-
         this.split_pane.setBottomComponent(this.send_panel);
         this.add(this.split_pane);
     }
