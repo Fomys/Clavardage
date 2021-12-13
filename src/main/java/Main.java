@@ -18,14 +18,16 @@ public class Main {
         database.applyMigrations();
 
 
-        Diffusion diffusion = new Diffusion(10000, database);
+        Diffusion diffusion = new Diffusion(10001, database);
         MessageServer message_server = new MessageServer(10001, database);
 
 
         diffusion.start();
         message_server.start();
 
-        MainWindow window = new MainWindow(database);
+        MainWindow window = new MainWindow(database, message_server);
+
+        diffusion.setNickname("test");
 
         boolean running = true;
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));

@@ -21,7 +21,7 @@ import javax.swing.*;
 public class UserList extends JPanel implements DatabaseObserver {
     private JScrollPane scroll_pane;
     private JPanel internal_panel;
-    private HashMap<String, JLabel> users;
+    private HashMap<String, User> users;
     private Database database;
 
     public UserList(Database database) {
@@ -35,6 +35,7 @@ public class UserList extends JPanel implements DatabaseObserver {
         this.internal_panel = new JPanel();
         this.scroll_pane = new JScrollPane(this.internal_panel);
         this.scroll_pane.createVerticalScrollBar();
+        this.scroll_pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); 
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -43,8 +44,8 @@ public class UserList extends JPanel implements DatabaseObserver {
     }
 
 
-    private void push_up(JLabel jLabelSpe) {
-        this.internal_panel.setComponentZOrder(jLabelSpe, 0);
+    private void push_up(User user) {
+        this.internal_panel.setComponentZOrder(user, 0);
         this.validate();
     }
 
@@ -58,8 +59,8 @@ public class UserList extends JPanel implements DatabaseObserver {
     @Override
     public void on_connect_user(String username) {
         if(!this.users.containsKey(username)) {
-            JLabel new_button;
-                new_button = new JLabel(username);
+            User new_button;
+                new_button = new User(username);
             this.users.put(username, new_button);
             this.internal_panel.add(new_button);
         }

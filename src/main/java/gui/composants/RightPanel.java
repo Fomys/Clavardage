@@ -5,6 +5,7 @@
 package gui.composants;
 
 import database.Database;
+import messages.MessageServer;
 
 import javax.swing.*;
 
@@ -16,16 +17,18 @@ public class RightPanel extends JPanel {
     private JSplitPane split_pane;
     private SendPanel send_panel;
     private MessagesPanel messages_panel;
+    private MessageServer message_server ; 
 
-    public RightPanel(Database database) {
+    public RightPanel(Database database, MessageServer message_server) {
         this.database = database;
+        this.message_server = message_server ; 
         initComponents();
     }
 
     private void initComponents() {
         this.split_pane = new JSplitPane();
         this.messages_panel = new MessagesPanel(this.database);
-        this.send_panel = new SendPanel();
+        this.send_panel = new SendPanel(this.message_server);
 
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
