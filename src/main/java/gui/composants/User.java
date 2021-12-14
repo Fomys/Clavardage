@@ -6,9 +6,13 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
 
 public class User extends JPanel{
 
@@ -16,30 +20,63 @@ public class User extends JPanel{
 	private String police = "Lucida Grande";
 	private int taillePolice = 13 ; 
 	
-	private JLabel label1;
-    private JLabel label2;
-    private JLabel label4;
-    private JLabel label3;
+	private ProfilePicture profilePic;
+    private JLabel nameDisplayed;
+    private JLabel dateLastMsg;
+    private JLabel lastMsg;
+    
+    private Color blue = new Color(59,130,247) ; 
+    private Color blancNickname = new Color(255,255,255) ; 
+    private Color grisFonce = new Color(160,160,160) ; 
+    private Color grisClair = new Color(230,230,230) ;
+    private Color grisBg = new Color(45,45,45) ; 
+    
 	
-	public User (String nickname){ 
+	public User (String nickname) throws IOException{ 
 		this.nickname = nickname ; 
 		
 		this.setBackground(new Color(45,45,45));
 		this.setForeground(Color.WHITE);
 		this.setFont(new Font(police, Font.PLAIN, taillePolice));
 		
-		this.setMaximumSize(new Dimension (350,50));
+		this.setMaximumSize(new Dimension (320,50));
 		
 		initComponents();
 		
 		
 	}
 	
-	private void initComponents() {
-		label1 = new JLabel();
-        label2 = new JLabel();
-        label4 = new JLabel();
-        label3 = new JLabel();
+	private void toBlue() {
+		this.setBackground(blue);
+		nameDisplayed.setForeground(blancNickname);
+		dateLastMsg.setForeground(grisClair); 
+		lastMsg.setForeground(grisClair); 
+	}
+	
+	private void toGray() {
+		this.setBackground(grisBg);
+		nameDisplayed.setForeground(Color.white);
+		dateLastMsg.setForeground(grisFonce); 
+		lastMsg.setForeground(grisFonce); 
+	}
+	
+	private void clickedOn() {
+
+		if (this != UserList.getCurrentUser()){ // si celui sur lequel on clic n'est pas le courant 
+			if (UserList.getCurrentUser() != null) {
+				UserList.getCurrentUser().toGray();
+			}
+			UserList.setCurrentUser(this); 
+			this.toBlue();
+		}
+	}
+	
+	private void initComponents() throws IOException {
+
+        nameDisplayed = new JLabel();
+        dateLastMsg = new JLabel();
+        lastMsg = new JLabel();
+
 
         //======== this ========
         
@@ -49,34 +86,57 @@ public class User extends JPanel{
         ((GridBagLayout)getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 1.0E-4};
         ((GridBagLayout)getLayout()).rowWeights = new double[] {0.0, 0.0, 1.0E-4};
         
-
-        //---- label1 ----
-        label1.setText("img");
-        add(label1, new GridBagConstraints(0, 0, 1, 2, 0.0, 0.0,
+        // ajout de la photo de profil 
+        ProfilePicture profilePic = new ProfilePicture("./../images/profil.png", 35); 
+        add(profilePic, new GridBagConstraints(0, 0, 1, 2, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 5), 0, 0));
+            new Insets(5, 5, 5, 5), 0, 0));
+        profilePic.addMouseListener(new MouseAdapter() {@Override public void mouseClicked(MouseEvent arg0) {clickedOn();}});
 
-        //---- label2 ----
-        label2.setText("pseudo");
-        add(label2, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+        //---- nameDisplayed ----
+        nameDisplayed.setText(this.nickname);
+        nameDisplayed.setFont(new Font(police, Font.BOLD, taillePolice));
+        nameDisplayed.setForeground(Color.white);
+        add(nameDisplayed, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets(0, 0, 5, 5), 0, 0));
+            new Insets(10, 0, 0, 5), 0, 0));
+        nameDisplayed.addMouseListener(new MouseAdapter() {@Override public void mouseClicked(MouseEvent arg0) {clickedOn();}});
 
-        //---- label4 ----
-        label4.setText("date");
-        add(label4, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets(0, 0, 5, 0), 0, 0));
 
-        //---- label3 ----
-        label3.setText("messadslqkdjldkjqlkdjqsldkjqslkdjqslkdjqslkdjqslkdjqslkdjqlkjdqslkdjqsge");
-        add(label3, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0,
+        //---- dateLastMsg ----
+        dateLastMsg.setText("date");
+        dateLastMsg.setForeground(new Color(160,160,160)); 
+        add(dateLastMsg, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 5), 0, 0));
+            new Insets(10, 0, 0, 0), 0, 0));
+        dateLastMsg.addMouseListener(new MouseAdapter() {@Override public void mouseClicked(MouseEvent arg0) {clickedOn();}});
+
+        //---- lastMsg ----
+        lastMsg.setText("mess");
+        lastMsg.setForeground(new Color(160,160,160)); 
+        add(lastMsg, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets(-10, 0, 0, 0), 0, 0));
+        lastMsg.addMouseListener(new MouseAdapter() {@Override public void mouseClicked(MouseEvent arg0) {clickedOn();}});
+
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
+        
+        this.addMouseListener(new MouseAdapter() {     
+	        @Override
+	        public void mouseClicked(MouseEvent arg0) {
+	        	clickedOn() ; 
+	        }
+	    });
+        
     }
 
+	public String getNickname() {
+		return nickname;
+	}
 
+
+
+	
     
 	
 	

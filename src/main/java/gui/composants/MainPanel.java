@@ -8,6 +8,8 @@ import database.Database;
 import messages.MessageServer;
 
 import java.awt.*;
+import java.io.IOException;
+
 import javax.swing.*;
 
 /**
@@ -19,13 +21,13 @@ public class MainPanel extends JPanel {
     private Database database;
     private MessageServer message_server;
 
-    public MainPanel(Database database, MessageServer message_server) {
+    public MainPanel(Database database, MessageServer message_server) throws IOException {
         this.database = database;
         this.message_server = message_server ; 
         initComponents();
     }
 
-    private void initComponents() {
+    private void initComponents() throws IOException {
         this.left_panel = new LeftPanel(this.database);
         this.right_panel = new RightPanel(this.database, this.message_server);
 

@@ -7,6 +7,8 @@ package gui.composants;
 import database.Database;
 
 import java.awt.*;
+import java.io.IOException;
+
 import javax.swing.*;
 
 /**
@@ -17,17 +19,17 @@ public class LeftPanel extends JPanel {
     private UserList user_list;
     private Database database;
 
-    public LeftPanel(Database database) {
+    public LeftPanel(Database database) throws IOException {
         this.database = database;
         initComponents();
     }
 
-    private void initComponents() {
+    private void initComponents() throws IOException {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - unknown
         this.search_bar = new JTextField();
         this.user_list = new UserList(this.database);
-
+        
         this.setLayout(new GridBagLayout());
         ((GridBagLayout)this.getLayout()).columnWidths = new int[] {0, 0};
         ((GridBagLayout)this.getLayout()).rowHeights = new int[] {0, 0, 0};

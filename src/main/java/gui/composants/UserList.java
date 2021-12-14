@@ -23,8 +23,10 @@ public class UserList extends JPanel implements DatabaseObserver {
     private JPanel internal_panel;
     private HashMap<String, User> users;
     private Database database;
+    
+    private static User current_user ; 
 
-    public UserList(Database database) {
+    public UserList(Database database) throws IOException {
         this.users = new HashMap<>();
         this.database = database;
         this.database.addObserver(this);
@@ -35,15 +37,18 @@ public class UserList extends JPanel implements DatabaseObserver {
         this.internal_panel = new JPanel();
         this.scroll_pane = new JScrollPane(this.internal_panel);
         this.scroll_pane.createVerticalScrollBar();
-        this.scroll_pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); 
+        this.scroll_pane.createHorizontalScrollBar(); 
+        this.scroll_pane.setBorder(null);
+        //this.scroll_pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); 
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
         this.internal_panel.setLayout(new BoxLayout(this.internal_panel, BoxLayout.Y_AXIS));
         this.add(this.scroll_pane);
+        
     }
 
 
+    
     private void push_up(User user) {
         this.internal_panel.setComponentZOrder(user, 0);
         this.validate();
@@ -57,16 +62,26 @@ public class UserList extends JPanel implements DatabaseObserver {
     }
 
     @Override
-    public void on_connect_user(String username) {
+    public void on_connect_user(String username) throws IOException {
         if(!this.users.containsKey(username)) {
-            User new_button;
-                new_button = new User(username);
-            this.users.put(username, new_button);
-            this.internal_panel.add(new_button);
+            User new_user;
+            new_user = new User(username);
+            this.users.put(username, new_user);
+            this.internal_panel.add(new_user);
+            // pour les tests avec plusieurs utilisateurs : 
+            this.internal_panel.add(new User("oui"));
         }
         this.push_up(this.users.get(username));
     }
 
     @Override
     public void on_disconnect_user(String username) {}
+
+	public static User getCurrentUser() {
+		return current_user;
+	}
+
+	public static void setCurrentUser(User current_user_u) {
+		current_user = current_user_u;
+	}
 }

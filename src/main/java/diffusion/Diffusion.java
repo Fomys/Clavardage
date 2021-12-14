@@ -51,7 +51,13 @@ public class Diffusion extends Thread {
             if (packet.getKind() == Packet.PacketKind.Illegal) {
                 continue;
             }
-            this.database.update(packet);
+            try {
+				this.database.update(packet);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				System.out.println("Problème mama"); 
+				e1.printStackTrace();
+			}
             if(packet.getKind() == Packet.PacketKind.Connect && this.database.getNickname() != null) {
                 ChangeNicknamePacket change_nickname_message = new ChangeNicknamePacket(this.database.getNickname(), packet.getAddress(), packet.getPort());
                 try {

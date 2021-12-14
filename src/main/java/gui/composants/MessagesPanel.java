@@ -77,7 +77,7 @@ public class MessagesPanel extends JPanel implements DatabaseObserver {
 
     @Override
     public void on_message(Message message) {
-        if(message.getFrom().equals(this.current_user) || message.getTo().equals(this.current_user)) {
+        if(message.getFrom().equals(UserList.getCurrentUser().getNickname()) || message.getTo().equals(UserList.getCurrentUser().getNickname())) {
             this.addMessage(message, message.getTo().equals(this.database.getNickname()));
         }
     }

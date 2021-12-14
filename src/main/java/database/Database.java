@@ -5,6 +5,7 @@ import com.google.common.collect.HashBiMap;
 import diffusion.packets.ChangeNicknamePacket;
 import diffusion.packets.Packet;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.*;
 import java.util.*;
@@ -39,7 +40,7 @@ public class Database {
         this.nickname = null;
     }
 
-    public void update(Packet packet) {
+    public void update(Packet packet) throws IOException {
         switch (packet.getKind()) {
             case Connect -> {
                 this.reverse_directory.remove(packet.getAddress());
@@ -116,7 +117,7 @@ public class Database {
         }
     }
 
-    private void notify_connect_user(String username) {
+    private void notify_connect_user(String username) throws IOException {
         System.out.println("Connect user: " + username);
         for (DatabaseObserver observer:
                 this.observers) {
