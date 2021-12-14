@@ -41,6 +41,8 @@ public class MainPanel extends JPanel {
 
         this.add(this.left_panel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0));
         this.add(this.right_panel, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0));
+        
+        this.setBackground(new Color(44, 43, 42));
     }
 
 }

@@ -45,6 +45,7 @@ public class UserList extends JPanel implements DatabaseObserver {
         this.internal_panel.setLayout(new BoxLayout(this.internal_panel, BoxLayout.Y_AXIS));
         this.add(this.scroll_pane);
         
+        internal_panel.setBackground(new Color(44, 43, 42));
     }
 
 
@@ -65,11 +66,11 @@ public class UserList extends JPanel implements DatabaseObserver {
     public void on_connect_user(String username) throws IOException {
         if(!this.users.containsKey(username)) {
             User new_user;
-            new_user = new User(username);
+            new_user = new User(username, this.database);
             this.users.put(username, new_user);
             this.internal_panel.add(new_user);
-            // pour les tests avec plusieurs utilisateurs : 
-            this.internal_panel.add(new User("oui"));
+            // TODO pour les tests avec plusieurs utilisateurs : 
+           //this.internal_panel.add(new User("oui"));
         }
         this.push_up(this.users.get(username));
     }

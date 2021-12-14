@@ -13,8 +13,12 @@ import java.io.IOException;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import database.Database;
+import database.DatabaseObserver;
+import database.Message;
 
-public class User extends JPanel{
+
+public class User extends JPanel implements DatabaseObserver {
 
 	private String nickname ; 
 	private String police = "Lucida Grande";
@@ -29,19 +33,19 @@ public class User extends JPanel{
     private Color blancNickname = new Color(255,255,255) ; 
     private Color grisFonce = new Color(160,160,160) ; 
     private Color grisClair = new Color(230,230,230) ;
-    private Color grisBg = new Color(45,45,45) ; 
+    private Color grisBg = new Color(44,43,42) ; 
     
 	
-	public User (String nickname) throws IOException{ 
+	public User (String nickname, Database database) throws IOException{ 
 		this.nickname = nickname ; 
-		
-		this.setBackground(new Color(45,45,45));
+		this.setBackground(new Color(44,43,42));
 		this.setForeground(Color.WHITE);
 		this.setFont(new Font(police, Font.PLAIN, taillePolice));
-		
 		this.setMaximumSize(new Dimension (320,50));
 		
 		initComponents();
+
+		database.addObserver(this);
 		
 		
 	}
@@ -132,6 +136,25 @@ public class User extends JPanel{
 
 	public String getNickname() {
 		return nickname;
+	}
+
+	@Override
+	public void on_message(Message message) {
+		// TODO Auto-generated method stub
+		if(message.getFrom().equals(this.getNickname()) || message.getTo().equals(this.getNickname())) {
+		this.lastMsg.setText(message.getContent());}
+	}
+
+	@Override
+	public void on_connect_user(String username) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void on_disconnect_user(String username) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
