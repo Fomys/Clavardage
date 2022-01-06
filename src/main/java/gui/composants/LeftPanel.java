@@ -40,8 +40,8 @@ public class LeftPanel extends JPanel implements DatabaseObserver {
         this.nickname = new JLabel();
         this.searchBar = new SearchBar(); 
         this.user_list = new UserList(this.database);
-		this.btnOtherUser = new ButtonIcon("./../images/write.png", 25);
-		this.btnSettings = new ButtonIcon("./../images/settings.png", 25) ; 
+		this.btnOtherUser = new ButtonIcon("/write.png", 25);
+		this.btnSettings = new ButtonIcon("/settings.png", 25) ;
 
 		nickname.setText(this.database.getNickname());
 		nickname.setFont(new Font("Arial", Font.PLAIN, 20));

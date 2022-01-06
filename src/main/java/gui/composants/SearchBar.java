@@ -6,12 +6,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
@@ -39,14 +36,14 @@ public class SearchBar extends JPanel {
 		txtSearchUser.setBorder(null); 
 		txtSearchUser.setForeground(new Color(150,150,150));
 
-		this.btnSearchIcon = new ButtonIcon("./../images/search.png", 18);
+		this.btnSearchIcon = new ButtonIcon("/search.png", 18);
 		btnSearchIcon.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				txtSearchUser.requestFocus(); 
 			}
 		});
 		
-		this.btnCrossIcon = new ButtonIcon("./../images/cross.png", 18);
+		this.btnCrossIcon = new ButtonIcon("/cross.png", 18);
 		btnCrossIcon.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				txtSearchUser.setText("");

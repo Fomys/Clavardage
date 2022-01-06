@@ -5,13 +5,9 @@
 package gui.composants;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
 import database.Message;
@@ -36,7 +32,7 @@ public class SendPanel extends JPanel {
         this.attach_button = new JButton();
         this.editor_scroll = new JScrollPane();
         this.editor_pane = new JTextArea();
-        this.send_button = new ButtonIcon("./../images/send.png", 25);
+        this.send_button = new ButtonIcon("/send.png", 25);
         
         editor_scroll.setBorder(null);
         editor_pane.setBorder(new LineBorder(new Color(150, 150, 150),2,true));
