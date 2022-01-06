@@ -53,8 +53,7 @@ public class LeftPanel extends JPanel implements DatabaseObserver {
 		});
 		btnSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("settings pseudo : oublie pas d'ouvrir une popup");
-				pseudoChange = new PopUpJava() ; 
+				pseudoChange = new PopUpJava(database) ;
 			}
 		});
         

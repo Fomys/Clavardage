@@ -4,6 +4,7 @@ import database.Database;
 import database.DatabaseObserver;
 import database.Message;
 import gui.composants.MainPanel;
+import gui.composants.PopUpJava;
 import messages.MessageServer;
 
 import java.awt.Dimension;
@@ -33,6 +34,8 @@ public class MainWindow {
         this.main_frame.setMinimumSize(new Dimension(725, 325));
         this.main_panel.setDoubleBuffered(true);
         this.main_frame.setVisible(true);
+
+        new PopUpJava(database);
     }
 }
 

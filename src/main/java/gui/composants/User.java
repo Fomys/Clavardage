@@ -92,7 +92,7 @@ public class User extends JPanel implements DatabaseObserver {
         ((GridBagLayout)getLayout()).rowWeights = new double[] {0.0, 0.0, 1.0E-4};
         
         // ajout de la photo de profil 
-        ProfilePicture profilePic = new ProfilePicture("./../images/profil.png", 35); 
+        ProfilePicture profilePic = new ProfilePicture("/profil.png", 35);
         add(profilePic, new GridBagConstraints(0, 0, 1, 2, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(5, 5, 5, 5), 0, 0));

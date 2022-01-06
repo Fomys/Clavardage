@@ -76,7 +76,6 @@ public class SendPanel extends JPanel {
 				// TODO Afficher l'erreur proprement 
 				e1.printStackTrace();
 			}
-		
 	});
     }
 
