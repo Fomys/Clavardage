@@ -24,9 +24,10 @@ public class MessageDisplay extends JPanel {
     public Message getMessage() {return this.message;}
 
     private void initComponents() {
-        panel2 = new JLabel(this.message.getContent());
+        panel2 = new JTextArea(this.message.getContent());
 
-
+        this.setPreferredSize(new Dimension(0,400));
+        
         setLayout(new GridBagLayout());
         ((GridBagLayout)getLayout()).columnWidths = new int[] {0, 0, 0};
         ((GridBagLayout)getLayout()).rowHeights = new int[] {0, 0};
@@ -50,6 +51,6 @@ public class MessageDisplay extends JPanel {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner Evaluation license - unknown
-    private JLabel panel2;
+    private JTextArea panel2;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

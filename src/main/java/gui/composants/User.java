@@ -45,7 +45,7 @@ public class User extends JPanel implements DatabaseObserver {
 		
 		initComponents();
 
-		database.addObserver(this);
+		//database.addObserver(this);
 		
 		
 	}

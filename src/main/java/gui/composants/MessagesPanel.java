@@ -73,6 +73,7 @@ public class MessagesPanel extends JPanel implements DatabaseObserver {
 
         
         this.add(this.scroll_pane);
+        
     }
 
     @Override
