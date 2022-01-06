@@ -8,16 +8,31 @@ import diffusion.packets.Packet;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.*;
-import java.util.*;
 import java.util.Date;
+import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static java.lang.Thread.currentThread;
 
 public class Database {
+    static ReentrantLock lock = new ReentrantLock();
     private final BiMap<String, InetAddress> directory;
     private final BiMap<InetAddress, String> reverse_directory;
     private final Map<InetAddress, Boolean> connected;
     private final Connection database;
-    private String nickname;
     private final List<DatabaseObserver> observers;
+    private final List<DatabaseObserver> pending_observers;
+    private String nickname;
+
+    public Database() throws SQLException {
+        this.observers = new ArrayList<>();
+        pending_observers = new ArrayList<>();
+        this.directory = HashBiMap.create();
+        this.reverse_directory = this.directory.inverse();
+        this.connected = new HashMap<>();
+        this.database = DriverManager.getConnection("jdbc:sqlite:messages.sqlite3");
+        this.nickname = null;
+    }
 
     public BiMap<String, InetAddress> getDirectory() {
         return this.directory;
@@ -29,15 +44,6 @@ public class Database {
 
     public Map<InetAddress, Boolean> getConnected() {
         return this.connected;
-    }
-
-    public Database() throws SQLException {
-        this.observers = new ArrayList<>();
-        this.directory = HashBiMap.create();
-        this.reverse_directory = this.directory.inverse();
-        this.connected = new HashMap<>();
-        this.database = DriverManager.getConnection("jdbc:sqlite:messages.sqlite3");
-        this.nickname = null;
     }
 
     public void update(Packet packet) throws IOException {
@@ -52,7 +58,7 @@ public class Database {
                 // TODO: envoyer la déconnection
             }
             case ChangeNickname -> {
-                if(!this.connected.getOrDefault(packet.getAddress(), false)) {
+                if (!this.connected.getOrDefault(packet.getAddress(), false)) {
                     this.connected.put(packet.getAddress(), true);
                 }
                 if (!this.directory.containsKey(((ChangeNicknamePacket) packet).getNickname())) {
@@ -101,28 +107,38 @@ public class Database {
         this.notify_new_message(message);
     }
 
-    private void notify_new_message(Message message) {
-        System.out.println("New message: " + message);
-        for (DatabaseObserver observer:
-                this.observers) {
+    synchronized private void notify_new_message(Message message) {
+        this.update_observers();
+        for (DatabaseObserver observer :
+                this.observers)
             observer.on_message(message);
-        }
     }
 
-    private void notify_disconnect_user(String username) {
-        System.out.println("Disconnect user: " + username);
-        for (DatabaseObserver observer:
-                this.observers) {
+    synchronized private void notify_disconnect_user(String username) {
+        this.update_observers();
+        for (DatabaseObserver observer :
+                this.observers)
             observer.on_disconnect_user(username);
+    }
+
+    synchronized private void notify_change_username(String nickname) {
+        this.update_observers();
+        for(DatabaseObserver observer : this.observers) {
+            observer.on_change_nickname(nickname);
         }
     }
 
-    private void notify_connect_user(String username) throws IOException {
-        System.out.println("Connect user: " + username);
-        for (DatabaseObserver observer:
-                this.observers) {
-            observer.on_connect_user(username);
+    private void update_observers() {
+        while (this.pending_observers.size() != 0) {
+            this.observers.add(this.pending_observers.remove(0));
         }
+    }
+
+    synchronized private void notify_connect_user(String username) throws IOException {
+        this.update_observers();
+        for (DatabaseObserver observer :
+                this.observers)
+            observer.on_connect_user(username);
     }
 
     public List<Message> getMessagesFor(String nickname) {
@@ -149,7 +165,7 @@ public class Database {
         return results;
     }
 
-    public  List<Message> getMessagesFor(String nickname, Date since) {
+    public List<Message> getMessagesFor(String nickname, Date since) {
         List<Message> results = new ArrayList<>();
         try {
             PreparedStatement statement = this.database.prepareStatement("SELECT `uuid`, `from`, `to`, `message`, `date` " +
@@ -174,12 +190,13 @@ public class Database {
         return results;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
     public String getNickname() {
         return this.nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+        this.notify_change_username(this.nickname);
     }
 
     public void receiveMessageFor(InetAddress from_address, Message message) {
@@ -193,7 +210,7 @@ public class Database {
         this.notify_new_message(message);
     }
 
-    public void addObserver(DatabaseObserver observer) {
-        this.observers.add(observer);
+    synchronized public void addObserver(DatabaseObserver observer) {
+        this.pending_observers.add(observer);
     }
 }

@@ -152,23 +152,4 @@ public class User extends JPanel implements DatabaseObserver {
 		if(message.getFrom().equals(this.getNickname()) || message.getTo().equals(this.getNickname())) {
 		this.lastMsg.setText(message.getContent());}
 	}
-
-	@Override
-	public void on_connect_user(String username) throws IOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void on_disconnect_user(String username) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-	
-    
-	
-	
 }

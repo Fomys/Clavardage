@@ -45,4 +45,7 @@ public class MainPanel extends JPanel {
         this.setBackground(new Color(44, 43, 42));
     }
 
+    public LeftPanel get_left_panel() {
+        return this.left_panel;
+    }
 }

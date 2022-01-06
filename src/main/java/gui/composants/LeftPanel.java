@@ -5,6 +5,7 @@
 package gui.composants;
 
 import database.Database;
+import database.DatabaseObserver;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -18,18 +19,19 @@ import javax.swing.*;
 /**
  * @author unknown
  */
-public class LeftPanel extends JPanel {
+public class LeftPanel extends JPanel implements DatabaseObserver {
     private JLabel nickname;
     private SearchBar searchBar;
-    private JButton btnOtherUser ; 
-    private JButton btnSettings ; 
+    private JButton btnOtherUser ;
+    private JButton btnSettings ;
     private UserList user_list;
     private Database database;
-    private PopUpJava pseudoChange ; 
+    private PopUpJava pseudoChange;
 
     public LeftPanel(Database database) throws IOException {
         this.database = database;
         initComponents();
+        this.database.addObserver(this);
     }
 
     private void initComponents() throws IOException {
@@ -79,5 +81,14 @@ public class LeftPanel extends JPanel {
             new Insets(0, 0, 0, 0), 0, 0));
         
         this.setBackground(new Color(44, 43, 42));
+    }
+
+    public UserList get_user_list() {
+        return this.user_list;
+    }
+
+    @Override
+    public void on_change_nickname(String nickname) {
+        this.nickname.setText(nickname);
     }
 }

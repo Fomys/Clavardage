@@ -72,16 +72,10 @@ public class SendPanel extends JPanel {
         add(this.send_button, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 0), 0, 0));
+
         this.send_button.addActionListener(e->{
 			try {
-				if (!editor_pane.getText().isEmpty()) 
-				{
-				this.message_server.sendMessageTo(new Message(editor_pane.getText()), "test");
-				editor_pane.setText(""); 
-				}
-				else {
-					this.message_server.sendMessageTo(new Message("test"), "test");
-				}
+				this.message_server.sendMessageTo(new Message(this.editor_pane.getText()), UserList.getCurrentUser().getNickname());
 			} catch (IOException e1) {
 				// TODO Afficher l'erreur proprement 
 				e1.printStackTrace();

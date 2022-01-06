@@ -82,14 +82,4 @@ public class MessagesPanel extends JPanel implements DatabaseObserver {
             this.addMessage(message, message.getTo().equals(this.database.getNickname()));
         }
     }
-
-    @Override
-    public void on_connect_user(String username) {
-
-    }
-
-    @Override
-    public void on_disconnect_user(String username) {
-
-    }
 }

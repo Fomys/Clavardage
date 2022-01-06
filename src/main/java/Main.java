@@ -28,8 +28,6 @@ public class Main {
         diffusion.setNickname("test");
         MainWindow window = new MainWindow(database, message_server);
 
-        
-
         boolean running = true;
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String command;

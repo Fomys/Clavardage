@@ -23,9 +23,9 @@ public class ProfilePicture extends JLabel  {
 			this.imgSize = imgSize ; 
 			this.setBorder(BorderFactory.createEmptyBorder());
 			//this.setContentAreaFilled(false);
-			Image imgSettings = ImageIO.read(getClass().getResource(way));
-			imgSettings = imgSettings.getScaledInstance(imgSize, imgSize, imgSettings.SCALE_SMOOTH); 
-			this.setIcon(new ImageIcon(imgSettings));
+			//Image imgSettings = ImageIO.read(getClass().getResource(way));
+			//imgSettings = imgSettings.getScaledInstance(imgSize, imgSize, imgSettings.SCALE_SMOOTH);
+			//this.setIcon(new ImageIcon(imgSettings));
 		}
 		
 
