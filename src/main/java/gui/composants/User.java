@@ -28,6 +28,7 @@ public class User extends JPanel implements DatabaseObserver {
     private JLabel nameDisplayed;
     private JLabel dateLastMsg;
     private JLabel lastMsg;
+    private JLabel lblLed ;
     
     private Color blue = new Color(59,130,247) ; 
     private Color blancNickname = new Color(255,255,255) ; 
@@ -106,7 +107,6 @@ public class User extends JPanel implements DatabaseObserver {
             new Insets(10, 0, 0, 5), 0, 0));
         nameDisplayed.addMouseListener(new MouseAdapter() {@Override public void mouseClicked(MouseEvent arg0) {clickedOn();}});
 
-
         //---- dateLastMsg ----
         dateLastMsg.setText("date");
         dateLastMsg.setForeground(new Color(160,160,160)); 
@@ -123,6 +123,14 @@ public class User extends JPanel implements DatabaseObserver {
             new Insets(-10, 0, 0, 0), 0, 0));
         lastMsg.addMouseListener(new MouseAdapter() {@Override public void mouseClicked(MouseEvent arg0) {clickedOn();}});
 
+        //---- ConnectedVisualiser ----
+        lblLed = new JLabel("•");
+        lblLed.setForeground(Color.green);
+        add(lblLed, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets(0, 40, -10, 0), 0, 0));
+        lblLed.addMouseListener(new MouseAdapter() {@Override public void mouseClicked(MouseEvent arg0) {clickedOn();}});
+        
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
         
         this.addMouseListener(new MouseAdapter() {     
