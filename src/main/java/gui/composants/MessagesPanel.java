@@ -14,6 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 /**
  * @author unknown
@@ -23,9 +27,10 @@ public class MessagesPanel extends JPanel implements DatabaseObserver {
 
     private final String current_user;
     private ArrayList<MessageDisplay> messages;
+    
+    private JTextPane chatBox; 
+    private JScrollPane scrollPane; 
 
-    private JPanel internal_panel;
-    private JScrollPane scroll_pane;
 
     public MessagesPanel(Database database) {
         this.database = database;
@@ -36,6 +41,43 @@ public class MessagesPanel extends JPanel implements DatabaseObserver {
     }
 
     private void addMessage(Message message, boolean left) {
+    	
+    	StyledDocument doc = chatBox.getStyledDocument();  
+    	
+        SimpleAttributeSet rightO = new SimpleAttributeSet();
+        StyleConstants.setAlignment(rightO, StyleConstants.ALIGN_RIGHT);
+        StyleConstants.setBackground(rightO, Color.RED);
+        StyleConstants.setBackground(rightO, new Color(59,130,247));
+        StyleConstants.setForeground(rightO, new Color(255,255,255)); 
+        StyleConstants.setRightIndent(rightO, 10);
+        StyleConstants.setLeftIndent(rightO, 100);
+        
+        SimpleAttributeSet leftO = new SimpleAttributeSet();
+        StyleConstants.setAlignment(leftO, StyleConstants.ALIGN_LEFT);
+        StyleConstants.setBackground(leftO, new Color(60,60,60));
+        StyleConstants.setForeground(leftO, new Color(255,255,255));
+        StyleConstants.setLeftIndent(leftO, 10);
+        StyleConstants.setRightIndent(leftO, 100);
+        
+        try {
+        	if (left) {
+        		System.out.println("left"); 
+            	chatBox.getDocument().insertString(doc.getLength(), "\n\n"+message.getContent(), rightO);
+        	    chatBox.setParagraphAttributes(rightO, false);
+        	}
+        	else {
+        		System.out.println("right"); 
+             	chatBox.getDocument().insertString(doc.getLength(), "\n\n"+message.getContent(), leftO);
+         	    chatBox.setParagraphAttributes(leftO, false);
+        	}
+        	
+    	    
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	/*
         MessageDisplay message_display = new MessageDisplay(message, left);
 
         if(this.messages.isEmpty()) {
@@ -51,28 +93,22 @@ public class MessagesPanel extends JPanel implements DatabaseObserver {
             this.internal_panel.add(message_display, new GridBagConstraints(0, i, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 0), 0, 0), i);
-
-
-//            ((GridBagLayout)this.internal_panel.getLayout()).rowHeights = ((GridBagLayout)this.internal_panel.getLayout()).rowHeights;
-//            ((GridBagLayout)this.internal_panel.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 1.0E-4};
-        }
+                    }
+        */
+        
         this.revalidate();
     }
 
     private void initComponents() {
-        this.internal_panel = new JPanel();
-        this.scroll_pane = new JScrollPane(this.internal_panel);
-        this.scroll_pane.createVerticalScrollBar();
 
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        this.internal_panel.setLayout(new GridBagLayout());
-
-        ((GridBagLayout)this.internal_panel.getLayout()).columnWidths = new int[] {0, 0};
-        ((GridBagLayout)this.internal_panel.getLayout()).columnWeights = new double[] {1.0, 1.0E-4};
-
+		this.setLayout(new BorderLayout());
+    	chatBox = new JTextPane();
+        chatBox.setEditable(false);
+        scrollPane = new JScrollPane(chatBox);
+        this.scrollPane.createVerticalScrollBar();
         
-        this.add(this.scroll_pane);
+        scrollPane = new JScrollPane(chatBox);
+        this.add(scrollPane, BorderLayout.CENTER);
         
     }
 

@@ -31,7 +31,7 @@ public class SendPanel extends JPanel {
     private void initComponents() throws IOException {
         this.attach_button = new JButton();
         this.editor_scroll = new JScrollPane();
-        this.editor_pane = new JTextArea();
+        this.editor_pane = new HintTextArea(" Ecrire un message..");
         this.send_button = new ButtonIcon("/send.png", 25);
         
         editor_scroll.setBorder(null);
@@ -72,6 +72,7 @@ public class SendPanel extends JPanel {
         this.send_button.addActionListener(e->{
 			try {
 				this.message_server.sendMessageTo(new Message(this.editor_pane.getText()), UserList.getCurrentUser().getNickname());
+				editor_pane.setText(""); 
 			} catch (IOException e1) {
 				// TODO Afficher l'erreur proprement 
 				e1.printStackTrace();
