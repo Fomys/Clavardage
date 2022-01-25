@@ -26,7 +26,7 @@ public class Main {
         message_server.start();
 
         diffusion.setNickname("test");
-        MainWindow window = new MainWindow(database, message_server);
+        MainWindow window = new MainWindow(database, message_server, diffusion);
 
         boolean running = true;
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));

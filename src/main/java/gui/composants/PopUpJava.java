@@ -1,21 +1,25 @@
 package gui.composants;
 
 import database.Database;
+import diffusion.Diffusion;
 
 import javax.swing.*;
+import java.io.IOException;
 
 public class PopUpJava {
-    public PopUpJava(Database database) {
+    public PopUpJava(Database database, Diffusion diffusion) {
         JFrame jFrame = new JFrame();
-        String getMessage = "" ; 
-        while (getMessage.isEmpty() || getMessage.isBlank()) {
-        	getMessage = JOptionPane.showInputDialog(jFrame, "Entrez votre nouveau pseudo");
-        	}
-        
-        database.setNickname(getMessage);
-        // checker si le pseudo est dispo et soit erreur soit validation 
 
-        JOptionPane.showMessageDialog(jFrame, "Votre nouveau pseudo est : " + getMessage);
+        String getMessage = JOptionPane.showInputDialog(jFrame, "Entrez votre nouveau pseudo");
+            try {
+                diffusion.connect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
+        if(database.checkNickname(getMessage)) {database.setNickname(getMessage);} else {
+            JOptionPane.showMessageDialog(jFrame, "Ce pseudo est déjà pris");
+
+        }
     }
 }

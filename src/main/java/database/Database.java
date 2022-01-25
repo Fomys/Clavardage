@@ -12,8 +12,6 @@ import java.util.Date;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static java.lang.Thread.currentThread;
-
 public class Database {
     static ReentrantLock lock = new ReentrantLock();
     private final BiMap<String, InetAddress> directory;
@@ -197,6 +195,10 @@ public class Database {
     public void setNickname(String nickname) {
         this.nickname = nickname;
         this.notify_change_username(this.nickname);
+    }
+
+    public boolean checkNickname(String nickname) {
+        return !this.getDirectory().containsKey(nickname);
     }
 
     public void receiveMessageFor(InetAddress from_address, Message message) {

@@ -5,6 +5,7 @@
 package gui.composants;
 
 import database.Database;
+import diffusion.Diffusion;
 import messages.MessageServer;
 
 import java.awt.*;
@@ -18,17 +19,19 @@ import javax.swing.*;
 public class MainPanel extends JPanel {
     private LeftPanel left_panel;
     private RightPanel right_panel;
-    private Database database;
-    private MessageServer message_server;
+    private final Database database;
+    private final MessageServer message_server;
+    private final Diffusion diffusion;
 
-    public MainPanel(Database database, MessageServer message_server) throws IOException {
+    public MainPanel(Database database, MessageServer message_server, Diffusion diffusion) throws IOException {
         this.database = database;
-        this.message_server = message_server ; 
+        this.message_server = message_server ;
+        this.diffusion = diffusion;
         initComponents();
     }
 
     private void initComponents() throws IOException {
-        this.left_panel = new LeftPanel(this.database);
+        this.left_panel = new LeftPanel(this.database, this.diffusion);
         this.right_panel = new RightPanel(this.database, this.message_server);
 
 

@@ -6,6 +6,7 @@ package gui.composants;
 
 import database.Database;
 import database.DatabaseObserver;
+import diffusion.Diffusion;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -22,14 +23,16 @@ import javax.swing.*;
 public class LeftPanel extends JPanel implements DatabaseObserver {
     private JLabel nickname;
     private SearchBar searchBar;
-    private JButton btnOtherUser ;
-    private JButton btnSettings ;
+    private JButton btnOtherUser;
+    private JButton btnSettings;
     private UserList user_list;
-    private Database database;
+    private final Database database;
+    private final Diffusion diffusion;
     private PopUpJava pseudoChange;
 
-    public LeftPanel(Database database) throws IOException {
+    public LeftPanel(Database database, Diffusion diffusion) throws IOException {
         this.database = database;
+        this.diffusion = diffusion;
         initComponents();
         this.database.addObserver(this);
     }
@@ -46,16 +49,8 @@ public class LeftPanel extends JPanel implements DatabaseObserver {
 		nickname.setText(this.database.getNickname());
 		nickname.setFont(new Font("Arial", Font.PLAIN, 20));
 		nickname.setForeground(new Color(200,200,200)); 
-		btnOtherUser.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("Add user");
-			}
-		});
-		btnSettings.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				pseudoChange = new PopUpJava(database) ;
-			}
-		});
+		btnOtherUser.addActionListener(e -> System.out.println("Add user"));
+		btnSettings.addActionListener(e -> pseudoChange = new PopUpJava(database, diffusion));
         
         this.setLayout(new GridBagLayout());
         ((GridBagLayout)this.getLayout()).columnWidths = new int[] {0, 0, 0, 0};
