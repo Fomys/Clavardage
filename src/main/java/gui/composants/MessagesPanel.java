@@ -44,31 +44,48 @@ public class MessagesPanel extends JPanel implements DatabaseObserver {
     	
     	StyledDocument doc = chatBox.getStyledDocument();  
     	
+    	SimpleAttributeSet centrO = new SimpleAttributeSet();
+        StyleConstants.setForeground(centrO, new Color(150,150,150));
+        StyleConstants.setFontSize(centrO, 8);
+        
+        SimpleAttributeSet hour = new SimpleAttributeSet();
+       StyleConstants.setAlignment(hour, StyleConstants.ALIGN_CENTER);
+    	
         SimpleAttributeSet rightO = new SimpleAttributeSet();
-        StyleConstants.setAlignment(rightO, StyleConstants.ALIGN_RIGHT);
-        StyleConstants.setBackground(rightO, Color.RED);
         StyleConstants.setBackground(rightO, new Color(59,130,247));
         StyleConstants.setForeground(rightO, new Color(255,255,255)); 
-        StyleConstants.setRightIndent(rightO, 10);
-        StyleConstants.setLeftIndent(rightO, 100);
+        StyleConstants.setFontSize(rightO, 14);
+       
+        
+        SimpleAttributeSet blue = new SimpleAttributeSet(); 
+        StyleConstants.setAlignment(blue, StyleConstants.ALIGN_RIGHT);
+        StyleConstants.setRightIndent(blue, 10);
+        StyleConstants.setLeftIndent(blue, 100);
         
         SimpleAttributeSet leftO = new SimpleAttributeSet();
-        StyleConstants.setAlignment(leftO, StyleConstants.ALIGN_LEFT);
         StyleConstants.setBackground(leftO, new Color(60,60,60));
         StyleConstants.setForeground(leftO, new Color(255,255,255));
-        StyleConstants.setLeftIndent(leftO, 10);
-        StyleConstants.setRightIndent(leftO, 100);
+        StyleConstants.setFontSize(leftO, 14);
+        
+        
+        SimpleAttributeSet gray = new SimpleAttributeSet(); 
+        StyleConstants.setAlignment(gray, StyleConstants.ALIGN_LEFT);
+        StyleConstants.setLeftIndent(gray, 10);
+        StyleConstants.setRightIndent(gray, 100);
+        
         
         try {
-        	if (left) {
-        		System.out.println("left"); 
-            	chatBox.getDocument().insertString(doc.getLength(), "\n\n"+message.getContent(), rightO);
-        	    chatBox.setParagraphAttributes(rightO, false);
+        	doc.insertString(doc.getLength(), "\n\n"+message.getDate(), centrO);
+        	
+        	if (message.getContent().charAt(0) == '0') {
+        		doc.setParagraphAttributes(doc.getLength() - message.getDate().toString().length(), doc.getLength() , blue, false);
+            	doc.insertString(doc.getLength(), "\n"+message.getContent(), rightO);
+        	    doc.setParagraphAttributes(doc.getLength() - message.getContent().length(), doc.getLength(), blue, false);
         	}
         	else {
-        		System.out.println("right"); 
-             	chatBox.getDocument().insertString(doc.getLength(), "\n\n"+message.getContent(), leftO);
-         	    chatBox.setParagraphAttributes(leftO, false);
+        		doc.setParagraphAttributes(doc.getLength() - message.getDate().toString().length(), doc.getLength() , gray, false);
+             	doc.insertString(doc.getLength(), "\n"+message.getContent(), leftO);
+         	    doc.setParagraphAttributes(doc.getLength() - message.getContent().length(), doc.getLength(), gray, false);
         	}
         	
     	    
@@ -77,24 +94,6 @@ public class MessagesPanel extends JPanel implements DatabaseObserver {
 			e.printStackTrace();
 		}
     	
-    	/*
-        MessageDisplay message_display = new MessageDisplay(message, left);
-
-        if(this.messages.isEmpty()) {
-            this.messages.add(message_display);
-            this.internal_panel.add(message_display, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 5, 0), 0, 0), 0);
-        } else {
-            int i = 0;
-            while(i < this.messages.size() && this.messages.get(i).getMessage().getDate().before(message.getDate())) { i += 1; }
-
-            this.messages.add(i, message_display);
-            this.internal_panel.add(message_display, new GridBagConstraints(0, i, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 5, 0), 0, 0), i);
-                    }
-        */
         
         this.revalidate();
     }
@@ -109,6 +108,10 @@ public class MessagesPanel extends JPanel implements DatabaseObserver {
         
         scrollPane = new JScrollPane(chatBox);
         this.add(scrollPane, BorderLayout.CENTER);
+        
+        scrollPane.setBackground(new Color(30,30,30));
+        chatBox.setBackground(new Color(30,30,30));
+        
         
     }
 
