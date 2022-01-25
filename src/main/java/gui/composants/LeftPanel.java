@@ -9,8 +9,6 @@ import database.DatabaseObserver;
 import diffusion.Diffusion;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.*;
@@ -28,7 +26,6 @@ public class LeftPanel extends JPanel implements DatabaseObserver {
     private UserList user_list;
     private final Database database;
     private final Diffusion diffusion;
-    private PopUpJava pseudoChange;
 
     public LeftPanel(Database database, Diffusion diffusion) throws IOException {
         this.database = database;
@@ -50,7 +47,7 @@ public class LeftPanel extends JPanel implements DatabaseObserver {
 		nickname.setFont(new Font("Arial", Font.PLAIN, 20));
 		nickname.setForeground(new Color(200,200,200)); 
 		btnOtherUser.addActionListener(e -> System.out.println("Add user"));
-		btnSettings.addActionListener(e -> pseudoChange = new PopUpJava(database, diffusion));
+		btnSettings.addActionListener(e -> new PopUpJava(database, diffusion));
         
         this.setLayout(new GridBagLayout());
         ((GridBagLayout)this.getLayout()).columnWidths = new int[] {0, 0, 0, 0};

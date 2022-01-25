@@ -152,4 +152,18 @@ public class User extends JPanel implements DatabaseObserver {
 		if(message.getFrom().equals(this.getNickname()) || message.getTo().equals(this.getNickname())) {
 		this.lastMsg.setText(message.getContent());}
 	}
+
+	@Override
+	public void on_connect_user(String username) {
+		if(this.nickname.equals(username)) {
+			this.lblLed.setForeground(Color.green);
+		}
+	}
+
+	@Override
+	public void on_disconnect_user(String username) {
+		if(this.nickname.equals(username)) {
+			this.lblLed.setForeground(Color.red);
+		}
+	}
 }
