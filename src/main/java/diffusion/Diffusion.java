@@ -8,6 +8,7 @@ import diffusion.packets.Packet;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class Diffusion extends Thread {
@@ -31,6 +32,7 @@ public class Diffusion extends Thread {
     }
 
     public void setNickname(String nickname) throws IOException {
+        System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
         this.database.setNickname(nickname);
         ChangeNicknamePacket connect_message = new ChangeNicknamePacket(nickname, BROADCAST_ADDRESS, this.socket.getLocalPort());
         this.socket.send(connect_message.to_packet());
@@ -48,6 +50,7 @@ public class Diffusion extends Thread {
                 continue;
             }
             Packet packet = Packet.from_packet(recv_packet);
+            System.out.println(packet.getAddress());
             if (packet.getKind() == Packet.PacketKind.Illegal) {
                 continue;
             }

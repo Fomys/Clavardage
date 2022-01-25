@@ -11,6 +11,7 @@ import database.Message;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.*;
@@ -75,8 +76,6 @@ public class UserList extends JPanel implements DatabaseObserver {
         this.push_up(this.users.get(username));
     }
 
-    @Override
-    public void on_disconnect_user(String username) {}
 
 	public static User getCurrentUser() {
 		return current_user;

@@ -24,8 +24,6 @@ public class Main {
 
         diffusion.start();
         message_server.start();
-
-        diffusion.setNickname("test");
         MainWindow window = new MainWindow(database, message_server, diffusion);
 
         boolean running = true;
