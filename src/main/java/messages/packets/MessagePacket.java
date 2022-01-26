@@ -2,10 +2,6 @@ package messages.packets;
 
 import database.Message;
 
-import java.net.InetAddress;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
 public class MessagePacket extends Packet {
     private final Message message;
 

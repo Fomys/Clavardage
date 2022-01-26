@@ -1,15 +1,23 @@
 package messages.packets;
 
 import java.io.Serializable;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.util.Date;
 
 public abstract class Packet implements Serializable {
     protected final PacketKind kind;
 
+    public Packet(PacketKind kind) {
+        this.kind = kind;
+    }
+
     public PacketKind getKind() {
         return kind;
+    }
+
+    @Override
+    public String toString() {
+        return "Packet{" +
+                "kind=" + kind +
+                '}';
     }
 
     public enum PacketKind {
@@ -38,16 +46,5 @@ public abstract class Packet implements Serializable {
                 }
             }
         }
-    }
-
-    public Packet(PacketKind kind) {
-        this.kind = kind;
-    }
-
-    @Override
-    public String toString() {
-        return "Packet{" +
-                "kind=" + kind +
-                '}';
     }
 }

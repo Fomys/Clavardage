@@ -8,24 +8,23 @@ import database.Database;
 import diffusion.Diffusion;
 import messages.MessageServer;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-
-import javax.swing.*;
 
 /**
  * @author unknown
  */
 public class MainPanel extends JPanel {
-    private LeftPanel left_panel;
-    private RightPanel right_panel;
     private final Database database;
     private final MessageServer message_server;
     private final Diffusion diffusion;
+    private LeftPanel left_panel;
+    private RightPanel right_panel;
 
     public MainPanel(Database database, MessageServer message_server, Diffusion diffusion) throws IOException {
         this.database = database;
-        this.message_server = message_server ;
+        this.message_server = message_server;
         this.diffusion = diffusion;
         initComponents();
     }
@@ -36,15 +35,15 @@ public class MainPanel extends JPanel {
 
 
         this.setLayout(new GridBagLayout());
-        ((GridBagLayout)this.getLayout()).columnWidths = new int[] {350, 0, 0};
-        ((GridBagLayout)this.getLayout()).rowHeights = new int[] {74, 0};
-        ((GridBagLayout)this.getLayout()).columnWeights = new double[] {0.0, 1.0, 1.0E-4};
-        ((GridBagLayout)this.getLayout()).rowWeights = new double[] {1.0, 1.0E-4};
+        ((GridBagLayout) this.getLayout()).columnWidths = new int[]{350, 0, 0};
+        ((GridBagLayout) this.getLayout()).rowHeights = new int[]{74, 0};
+        ((GridBagLayout) this.getLayout()).columnWeights = new double[]{0.0, 1.0, 1.0E-4};
+        ((GridBagLayout) this.getLayout()).rowWeights = new double[]{1.0, 1.0E-4};
 
 
-        this.add(this.left_panel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0));
-        this.add(this.right_panel, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0));
-        
+        this.add(this.left_panel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+        this.add(this.right_panel, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+
         this.setBackground(new Color(44, 43, 42));
     }
 

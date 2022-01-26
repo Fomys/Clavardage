@@ -7,10 +7,9 @@ package gui.composants;
 import database.Database;
 import messages.MessageServer;
 
-import java.awt.Color;
-import java.io.IOException;
-
 import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
 
 /**
  * @author unknown
@@ -20,11 +19,11 @@ public class RightPanel extends JPanel {
     private JSplitPane split_pane;
     private SendPanel send_panel;
     private MessagesPanel messages_panel;
-    private MessageServer message_server ; 
+    private final MessageServer message_server;
 
     public RightPanel(Database database, MessageServer message_server) throws IOException {
         this.database = database;
-        this.message_server = message_server ; 
+        this.message_server = message_server;
         initComponents();
     }
 
@@ -41,9 +40,9 @@ public class RightPanel extends JPanel {
         this.split_pane.setTopComponent(this.messages_panel);
         this.split_pane.setBottomComponent(this.send_panel);
         this.add(this.split_pane);
-        
-        split_pane.setBackground(new Color(30,30,30));
-        this.setBackground(new Color(30,30,30));
+
+        split_pane.setBackground(new Color(30, 30, 30));
+        this.setBackground(new Color(30, 30, 30));
         this.setBorder(null);
         messages_panel.setBorder(null);
         send_panel.setBorder(null);

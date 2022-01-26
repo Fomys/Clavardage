@@ -2,21 +2,23 @@ package messages;
 
 import database.Database;
 import database.Message;
-import messages.packets.RequestMessagesPacket;
 import messages.packets.MessagePacket;
 import messages.packets.Packet;
+import messages.packets.RequestMessagesPacket;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Date;
 import java.util.List;
 
 public class Client extends Thread {
-    private Socket socket;
-    private boolean running = true;
-    private Database database;
     private final ObjectOutputStream output_stream;
     private final ObjectInputStream input_stream;
+    private final Socket socket;
+    private boolean running = true;
+    private final Database database;
 
     public Client(Socket socket, Database database) throws IOException {
         super("Client " + socket.getInetAddress());
@@ -33,9 +35,8 @@ public class Client extends Thread {
     @Override
     public void run() {
         Packet packet;
-        while(this.running) {
+        while (this.running) {
             try {
-                System.out.println("Wait packet");
                 packet = (Packet) input_stream.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -51,7 +52,6 @@ public class Client extends Thread {
     }
 
     void packetHandler(Packet packet) {
-        System.out.println(packet);
         switch (packet.getKind()) {
             case Message -> messageHandler((MessagePacket) packet);
             case GetMessages -> requestMessagesSinceHandler((RequestMessagesPacket) packet);
@@ -63,10 +63,8 @@ public class Client extends Thread {
         List<Message> messages = this.database.getMessagesFor(this.database.getReverseDirectory().get(this.socket.getInetAddress()), packet.getSince());
         for (Message message : messages) {
             try {
-                System.out.println("Envoi du message demandé: " + message);
                 this.output_stream.writeObject(new MessagePacket(message));
             } catch (IOException e) {
-                System.out.println("Erreur de message: " + e);
                 e.printStackTrace();
             }
         }
@@ -83,7 +81,6 @@ public class Client extends Thread {
     }
 
     public void requestMessagesSince(Date since) throws IOException {
-        System.out.println("Requesting messages since " + since);
         this.output_stream.writeObject(new RequestMessagesPacket(since));
     }
 }
