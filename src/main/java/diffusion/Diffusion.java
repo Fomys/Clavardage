@@ -1,76 +1,132 @@
 package diffusion;
 
-import diffusion.messages.ChangeNicknameMessage;
-import diffusion.messages.ConnectMessage;
-import diffusion.messages.DisconnectMessage;
-import diffusion.messages.Message;
+import database.Database;
+import database.User;
+import diffusion.packets.*;
+import messages.MessageServer;
 
 import java.io.IOException;
-import java.net.*;
-import java.util.logging.Logger;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.UUID;
 
 public class Diffusion extends Thread {
-    private static final Logger LOGGER = Logger.getLogger( Diffusion.class.getName() );
-
-    private final InetAddress BROADCAST_ADDRESS = Inet4Address.getByAddress(new byte[] {-1, -1, -1, -1});
-
-    private DatagramSocket socket;
+    public static int PORT = 10001;
+    private final InetAddress BROADCAST_ADDRESS = Inet4Address.getByAddress(new byte[]{-1, -1, -1, -1});
+    private final Database database;
+    private final DatagramSocket socket;
+    private final MessageServer message_server;
     private boolean running = true;
-    private final Cache cache;
-    private String nickname;
 
-    public Diffusion(int port, Cache cache) throws Exception {
-        this.socket = new DatagramSocket(port, Inet4Address.getByAddress(new byte[] {0,0,0,0}));
+    public Diffusion(Database database, MessageServer message_server) throws Exception {
+        super("Diffusion");
+        this.message_server = message_server;
+        this.socket = new DatagramSocket(PORT, Inet4Address.getByAddress(new byte[]{0, 0, 0, 0}));
         this.socket.setBroadcast(true);
-        this.cache = cache;
+        this.database = database;
+    }
+
+    public InetAddress getBROADCAST_ADDRESS() {
+        return this.BROADCAST_ADDRESS;
     }
 
     public void disconnect() throws IOException {
-        DisconnectMessage disconnect_message = new DisconnectMessage(BROADCAST_ADDRESS, this.socket.getLocalPort());
+        DisconnectPacket disconnect_message = new DisconnectPacket(BROADCAST_ADDRESS);
         this.socket.send(disconnect_message.to_packet());
         this.running = false;
     }
 
-    public void setNickname(String nickname) throws IOException {
-        ChangeNicknameMessage connect_message = new ChangeNicknameMessage(nickname, BROADCAST_ADDRESS, this.socket.getLocalPort());
-        this.nickname = nickname;
-        this.socket.send(connect_message.to_packet());
+    public void diffuse_nickname(String nickname) {
+        if (this.database.getUUID() != null) {
+            ChangeNicknamePacket connect_message = new ChangeNicknamePacket(this.database.getUUID(), nickname, BROADCAST_ADDRESS);
+            try {
+                this.socket.send(connect_message.to_packet());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void run() {
-        LOGGER.info("Start diffusion server...");
         byte[] buffer = new byte[512];
-        while(this.running) {
+        while (this.running) {
             DatagramPacket recv_packet = new DatagramPacket(buffer, buffer.length);
             try {
                 socket.receive(recv_packet);
             } catch (IOException e) {
-                // TODO: Envoyer à la GUI
-                e.printStackTrace();
+                return;
+            }
+            Packet packet = Packet.from_packet(recv_packet);
+            if (packet.getKind() == Packet.PacketKind.Illegal) {
                 continue;
             }
-            Message message = Message.from_packet(recv_packet);
-            if (message.getKind() == Message.MessageKind.Illegal) {
-                LOGGER.warning("Illegal message received from " + message.getAddress() + ":" + message.getPort());
-                continue;
+            try {
+                this.database.update(packet);
+            } catch (IOException throwables) {
+                throwables.printStackTrace();
             }
-            LOGGER.info("Message received from "+ message.getAddress() + ":" + message.getPort() + " : " + message);
-            this.cache.update(message);
-            if(message.getKind() == Message.MessageKind.Connect && this.nickname != null) {
-                ChangeNicknameMessage change_nickname_message = new ChangeNicknameMessage(this.nickname, message.getAddress(), message.getPort());
+            if (packet.getKind() == Packet.PacketKind.Connect && this.database.getUUID() != null) {
+                this.on_connect_packet((ConnectPacket) packet);
+            }
+            if (packet.getKind() == Packet.PacketKind.UserPacket) {
                 try {
-                    this.socket.send(change_nickname_message.to_packet());
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    this.on_user_packet((UserPacket) packet);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
                 }
+            } else if (packet.getKind() == Packet.PacketKind.RequestMessagesSince) {
+                this.on_request_messages_since((RequestMessagesSince) packet);
             }
+
         }
         this.socket.close();
     }
 
-    public void connect() throws IOException {
-        ConnectMessage connect_message = new ConnectMessage(BROADCAST_ADDRESS, this.socket.getLocalPort());
+    private void on_request_messages_since(RequestMessagesSince packet) {
+        this.message_server.requestMessagesSince(packet.getSince(), packet.getUUID1(), packet.getUUID2(), packet.getAddress());
+    }
 
+    private void on_user_packet(UserPacket packet) throws SQLException {
+        User user = packet.to_user();
+        user.saveTo(this.database.getConnection());
+    }
+
+    public void on_connect_packet(ConnectPacket packet) {
+        ChangeUUIDPacket change_uuid_packet = new ChangeUUIDPacket(this.database.getUUID(), packet.getAddress());
+        ChangeNicknamePacket change_nickname_message = new ChangeNicknamePacket(this.database.getUUID(), this.database.getNickname(), packet.getAddress());
+        try {
+            this.socket.send(change_uuid_packet.to_packet());
+            for (User user :
+                    User.all(database.getConnection())) {
+                this.diffuse_new_user(user, packet.getAddress());
+            }
+            this.socket.send(change_nickname_message.to_packet());
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void connect() throws IOException {
+        ConnectPacket connect_message = new ConnectPacket(BROADCAST_ADDRESS);
         this.socket.send(connect_message.to_packet());
+    }
+
+    public void diffuse_new_user(User user, InetAddress address) throws IOException {
+        UserPacket user_packet = new UserPacket(user, address);
+        this.socket.send(user_packet.to_packet());
+    }
+
+    public void diffuse_uuid(UUID uuid, InetAddress address) throws IOException {
+        ChangeUUIDPacket change_uuid_packet = new ChangeUUIDPacket(uuid, address);
+        this.socket.send(change_uuid_packet.to_packet());
+    }
+
+    public void requestMessageSince(Date date, UUID uuid1, UUID uuid2) throws IOException {
+        RequestMessagesSince request_message_since_packet = new RequestMessagesSince(this.getBROADCAST_ADDRESS(), date, uuid1, uuid2);
+        this.socket.send(request_message_since_packet.to_packet());
     }
 }
