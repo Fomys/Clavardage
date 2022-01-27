@@ -1,17 +1,15 @@
 package gui.composants.left;
 
-import com.sun.tools.javac.Main;
 import database.Database;
 import gui.MainWindow;
-import gui.events.*;
 import gui.Panel;
 import gui.events.Event;
+import gui.events.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
@@ -26,7 +24,7 @@ public class User extends JPanel implements Panel {
     private JLabel last_message_date;
     private JLabel status_led;
 
-    public User(Panel parent, Database database,  UUID uuid) {
+    public User(Panel parent, Database database, UUID uuid) {
         this.parent = parent;
         this.database = database;
         this.uuid = uuid;
@@ -138,7 +136,7 @@ public class User extends JPanel implements Panel {
         ) {
             SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss");
             this.last_message_date.setText(formatter.format(((ReceiveMessage) event).getMessage().getDate()));
-        } else if(event instanceof ChangeNickname && ((ChangeNickname) event).getUUID().equals(this.uuid)) {
+        } else if (event instanceof ChangeNickname && ((ChangeNickname) event).getUUID().equals(this.uuid)) {
             this.name_display.setText(((ChangeNickname) event).getNickname());
         }
     }

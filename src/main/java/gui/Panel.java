@@ -1,6 +1,5 @@
 package gui;
 
-import database.Database;
 import gui.events.Event;
 
 public interface Panel {

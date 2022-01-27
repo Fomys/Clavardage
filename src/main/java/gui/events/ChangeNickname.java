@@ -7,11 +7,15 @@ public class ChangeNickname implements Event {
     private final UUID uuid;
 
     public ChangeNickname(UUID uuid, String nickname) {
-        this.uuid=  uuid;this.nickname = nickname;
+        this.uuid = uuid;
+        this.nickname = nickname;
     }
 
     public String getNickname() {
         return this.nickname;
     }
-    public UUID getUUID() {return this.uuid;}
+
+    public UUID getUUID() {
+        return this.uuid;
+    }
 }

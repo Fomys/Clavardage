@@ -26,7 +26,8 @@ public class PopUpNickname extends JPanel implements Panel {
     }
 
     @Override
-    public void propagate_event(Event event) {}
+    public void propagate_event(Event event) {
+    }
 
     @Override
     public void converge_event(Event event) {

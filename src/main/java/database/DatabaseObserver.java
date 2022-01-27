@@ -1,6 +1,5 @@
 package database;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public interface DatabaseObserver {

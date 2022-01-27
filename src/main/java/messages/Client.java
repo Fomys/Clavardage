@@ -4,14 +4,12 @@ import database.Database;
 import database.Message;
 import messages.packets.MessagePacket;
 import messages.packets.Packet;
-import messages.packets.RequestMessagesPacket;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 public class Client extends Thread {
@@ -55,28 +53,12 @@ public class Client extends Thread {
     void packetHandler(Packet packet) {
         switch (packet.getKind()) {
             case Message -> messageHandler((MessagePacket) packet);
-            case GetMessages -> requestMessagesSinceHandler((RequestMessagesPacket) packet);
             case Illegal -> System.out.println("Illegal packet");
         }
     }
 
-    private void requestMessagesSinceHandler(RequestMessagesPacket packet) {
-        List<Message> messages = Message.AllBetween(
-                database.getConnection(),
-                packet.getUUID1(),
-                packet.getUUID2());
-        for (Message message : messages) {
-            try {
-                this.output_stream.writeObject(new MessagePacket(message));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
     void messageHandler(MessagePacket packet) {
-        this.database.receiveMessageFor(this.socket.getInetAddress(), packet.getMessage());
+        this.database.receiveMessage(packet.getMessage());
     }
 
     void sendMessage(Message message) {
@@ -89,6 +71,19 @@ public class Client extends Thread {
     }
 
     public void requestMessagesSince(Date since, UUID uuid1, UUID uuid2) throws IOException {
-        this.output_stream.writeObject(new RequestMessagesPacket(since, uuid1, uuid2));
+        System.out.println("Request " + uuid1 + " " + uuid2);
+        for (Message message :
+                Message.AllBetween(this.database.getConnection(), uuid1, uuid2)) {
+            System.out.println("Send " + message);
+            try {
+                this.output_stream.writeObject(new MessagePacket(message));
+            } catch (IOException e) {
+                this.database.disconnect(this.socket.getInetAddress());
+            }
+        }
+    }
+
+    public boolean connected() {
+        return !this.socket.isClosed();
     }
 }

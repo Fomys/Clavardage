@@ -22,29 +22,6 @@ public abstract class Packet implements Serializable {
 
     public enum PacketKind {
         Message,
-        GetMessages,
-        Illegal;
-
-        private static PacketKind from_byte(byte value) {
-            switch (value) {
-                default -> {
-                    return Illegal;
-                }
-                case 0x01 -> {
-                    return Message;
-                }
-            }
-        }
-
-        public byte to_byte() {
-            switch (this) {
-                case Message -> {
-                    return 0x01;
-                }
-                default -> {
-                    return 0x00;
-                }
-            }
-        }
+        Illegal
     }
 }

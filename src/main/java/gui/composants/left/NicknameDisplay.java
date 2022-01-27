@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class NicknameDisplay extends JLabel implements Panel{
+public class NicknameDisplay extends JLabel implements Panel {
     private final Database database;
     private final Panel parent;
 
@@ -29,7 +29,7 @@ public class NicknameDisplay extends JLabel implements Panel{
 
     @Override
     public void propagate_event(Event event) {
-        if(event instanceof ChangeNickname && ((ChangeNickname) event).getUUID() == this.database.getUUID()) {
+        if (event instanceof ChangeNickname && ((ChangeNickname) event).getUUID() == this.database.getUUID()) {
             this.setText(((ChangeNickname) event).getNickname());
         }
     }

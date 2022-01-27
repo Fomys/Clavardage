@@ -6,12 +6,12 @@ package gui.composants.right;
 
 import database.Database;
 import gui.MainWindow;
-import gui.events.Event;
 import gui.Panel;
+import gui.events.Event;
 
 import javax.swing.*;
 
-public class RightPanel extends JPanel implements Panel  {
+public class RightPanel extends JPanel implements Panel {
     private final Database database;
     private final Panel parent;
     private JSplitPane split_pane;

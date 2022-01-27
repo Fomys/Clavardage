@@ -32,10 +32,10 @@ public class MessageServer extends Thread {
     }
 
     private Client getClient(InetAddress to) {
-        if (this.clients.containsKey(to)) {
+        if (this.clients.containsKey(to) && this.clients.get(to).connected()) {
             return this.clients.get(to);
         } else if (this.database.getConnected().getOrDefault(to, false)) {
-            Socket client_socket = null;
+            Socket client_socket;
             try {
                 client_socket = new Socket(to, this.socket.getLocalPort());
                 Client client = new Client(client_socket, this.database);
@@ -46,20 +46,17 @@ public class MessageServer extends Thread {
                 this.database.disconnect(to);
             }
         }
-            return null;
-
+        return null;
     }
 
-    public void requestMessagesSince(Date since, UUID uuid1, UUID uuid2) {
-        for (Client client :
-                this.clients.values()) {
-            try {
-                if (client != null) {
-                    client.requestMessagesSince(since, uuid1, uuid2);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+    public void requestMessagesSince(Date since, UUID uuid1, UUID uuid2, InetAddress to) {
+        Client client = this.getClient(to);
+        try {
+            if (client != null) {
+                client.requestMessagesSince(since, uuid1, uuid2);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -97,9 +94,5 @@ public class MessageServer extends Thread {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void quit() throws IOException {
-        this.socket.close();
     }
 }

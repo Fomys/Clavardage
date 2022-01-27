@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class SendMessage implements Event {
     private final Message message;
-    private UUID to;
+    private final UUID to;
 
     public SendMessage(Message message, UUID to) {
         this.message = message;

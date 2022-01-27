@@ -6,11 +6,11 @@ package gui.composants.right;
 
 import database.Database;
 import database.Message;
+import gui.Panel;
 import gui.composants.ButtonIcon;
 import gui.composants.HintTextArea;
 import gui.events.ChangeSelectedUser;
 import gui.events.Event;
-import gui.Panel;
 import gui.events.SendMessage;
 
 import javax.swing.*;
@@ -75,7 +75,7 @@ public class SendPanel extends JPanel implements Panel {
                 new Insets(0, 0, 0, 0), 0, 0));
 
         this.send_button.addActionListener(e -> {
-            if(this.current_user != null) {
+            if (this.current_user != null) {
                 this.converge_event(new SendMessage(new Message(this.editor_pane.getText()), this.current_user));
             }
         });

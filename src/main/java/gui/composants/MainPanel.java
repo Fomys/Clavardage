@@ -5,10 +5,10 @@
 package gui.composants;
 
 import database.Database;
+import gui.Panel;
 import gui.composants.left.LeftPanel;
 import gui.composants.right.RightPanel;
 import gui.events.Event;
-import gui.Panel;
 
 import javax.swing.*;
 import java.awt.*;

@@ -6,8 +6,8 @@ import database.Message;
 import diffusion.Diffusion;
 import gui.composants.MainPanel;
 import gui.composants.PopUpLogin;
-import gui.events.*;
 import gui.events.Event;
+import gui.events.*;
 import messages.MessageServer;
 
 import javax.swing.*;
@@ -64,8 +64,8 @@ public class MainWindow extends JPanel implements Panel, DatabaseObserver {
     }
 
     private void quit() throws IOException, SQLException {
-        this.message_server.quit();
-        this.diffusion.quit();
+        this.message_server.disconnect();
+        this.diffusion.disconnect();
         this.database.quit();
         this.main_frame.dispose();
     }
@@ -75,14 +75,18 @@ public class MainWindow extends JPanel implements Panel, DatabaseObserver {
         System.out.println("Dispatch " + event.getClass());
         this.main_panel.propagate_event(event);
 
-       if (event instanceof ChangeSelectedUser) {
+        if (event instanceof ChangeSelectedUser) {
             this.main_frame.setTitle("Clavardage - " + this.database.getNicknameFor(((ChangeSelectedUser) event).getUUID()));
-            this.message_server.requestMessagesSince(new Date(0), ((ChangeSelectedUser) event).getUUID(), this.database.getUUID());
+            try {
+                this.diffusion.requestMessageSince(new Date(0), ((ChangeSelectedUser) event).getUUID(), this.database.getUUID());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void converge_event(Event event) {
-        if(event instanceof SendMessage) {
+        if (event instanceof SendMessage) {
             this.message_server.sendMessageTo(((SendMessage) event).getMessage(), ((SendMessage) event).getTo());
         } else if (event instanceof ChangeNickname) {
             this.diffusion.diffuse_nickname(((ChangeNickname) event).getNickname());

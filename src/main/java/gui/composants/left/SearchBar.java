@@ -9,9 +9,6 @@ import gui.events.Event;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
 
 public class SearchBar extends JPanel implements gui.Panel {
     private final Panel parent;
@@ -35,19 +32,13 @@ public class SearchBar extends JPanel implements gui.Panel {
         txtSearchUser.setBorder(null);
         txtSearchUser.setForeground(new Color(150, 150, 150));
 
-            this.btnSearchIcon = new ButtonIcon("/search.png", 18);
-        btnSearchIcon.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                txtSearchUser.requestFocus();
-            }
-        });
+        this.btnSearchIcon = new ButtonIcon("/search.png", 18);
+        btnSearchIcon.addActionListener(e -> txtSearchUser.requestFocus());
 
         this.btnCrossIcon = new ButtonIcon("/cross.png", 18);
-        btnCrossIcon.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                txtSearchUser.setText("");
-                txtSearchUser.requestFocus();
-            }
+        btnCrossIcon.addActionListener(e -> {
+            txtSearchUser.setText("");
+            txtSearchUser.requestFocus();
         });
 
 
@@ -69,7 +60,8 @@ public class SearchBar extends JPanel implements gui.Panel {
     }
 
     @Override
-    public void propagate_event(Event event) {}
+    public void propagate_event(Event event) {
+    }
 
     @Override
     public void converge_event(Event event) {

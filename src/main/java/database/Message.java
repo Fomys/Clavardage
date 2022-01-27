@@ -13,9 +13,9 @@ import java.util.UUID;
 public class Message implements Serializable, DatabaseObject {
     private final String content;
     private final UUID uuid;
+    private final Date date;
     private UUID from;
     private UUID to;
-    private Date date;
 
     public Message(String content) {
         this.date = new Date();
@@ -52,7 +52,9 @@ public class Message implements Serializable, DatabaseObject {
         }
         return results;
     }
+
     public static List<Message> AllBetween(Connection connection, UUID uuid1, UUID uuid2) {
+        System.out.println("AllBetween " + uuid1 + " " + uuid2);
         List<Message> results = new ArrayList<>();
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT `uuid`, `from`, `to`, `message`, `date` " +

@@ -5,9 +5,9 @@
 package gui.composants.left;
 
 import database.Database;
+import gui.Panel;
 import gui.events.ConnectedUser;
 import gui.events.Event;
-import gui.Panel;
 
 import javax.swing.*;
 import java.awt.*;

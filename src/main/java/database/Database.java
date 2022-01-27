@@ -4,14 +4,11 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import diffusion.packets.ChangeNicknamePacket;
 import diffusion.packets.ChangeUUIDPacket;
-import diffusion.packets.DisconnectPacket;
 import diffusion.packets.Packet;
-import messages.Client;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.*;
-import java.util.Date;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -110,8 +107,10 @@ public class Database {
     }
 
     public void sendMessageTo(InetAddress dest_address, Message message) {
-        message.setTo(this.reverse_directory.get(dest_address));
-        message.setFrom(this.user);
+        if (message.getTo() == null)
+            message.setTo(this.reverse_directory.get(dest_address));
+        if (message.getFrom() == null)
+            message.setFrom(this.user);
         try {
             message.saveTo(this.connection);
         } catch (SQLException throwables) {
@@ -147,7 +146,7 @@ public class Database {
         }
     }
 
-    synchronized private void notify_connect_user(UUID uuid) throws IOException {
+    synchronized private void notify_connect_user(UUID uuid) {
         this.update_observers();
         for (DatabaseObserver observer :
                 this.observers)
@@ -183,9 +182,7 @@ public class Database {
         }
     }
 
-    public void receiveMessageFor(InetAddress from_address, Message message) {
-        message.setFrom(this.reverse_directory.get(from_address));
-        message.setTo(this.user);
+    public void receiveMessage(Message message) {
         try {
             message.saveTo(this.connection);
         } catch (SQLException throwables) {
@@ -225,4 +222,5 @@ public class Database {
     public void disconnect(InetAddress address) {
         this.notify_disconnect_user(this.reverse_directory.get(address));
     }
+
 }

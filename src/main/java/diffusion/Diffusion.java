@@ -3,6 +3,7 @@ package diffusion;
 import database.Database;
 import database.User;
 import diffusion.packets.*;
+import messages.MessageServer;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -10,6 +11,7 @@ import java.net.DatagramSocket;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.UUID;
 
 public class Diffusion extends Thread {
@@ -17,9 +19,12 @@ public class Diffusion extends Thread {
     private final InetAddress BROADCAST_ADDRESS = Inet4Address.getByAddress(new byte[]{-1, -1, -1, -1});
     private final Database database;
     private final DatagramSocket socket;
+    private final MessageServer message_server;
     private boolean running = true;
-    public Diffusion(Database database) throws Exception {
+
+    public Diffusion(Database database, MessageServer message_server) throws Exception {
         super("Diffusion");
+        this.message_server = message_server;
         this.socket = new DatagramSocket(PORT, Inet4Address.getByAddress(new byte[]{0, 0, 0, 0}));
         this.socket.setBroadcast(true);
         this.database = database;
@@ -36,7 +41,7 @@ public class Diffusion extends Thread {
     }
 
     public void diffuse_nickname(String nickname) {
-        if (this.database.getUUID() != null){
+        if (this.database.getUUID() != null) {
             ChangeNicknamePacket connect_message = new ChangeNicknamePacket(this.database.getUUID(), nickname, BROADCAST_ADDRESS);
             try {
                 this.socket.send(connect_message.to_packet());
@@ -73,9 +78,16 @@ public class Diffusion extends Thread {
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
+            } else if (packet.getKind() == Packet.PacketKind.RequestMessagesSince) {
+                this.on_request_messages_since((RequestMessagesSince) packet);
             }
+
         }
         this.socket.close();
+    }
+
+    private void on_request_messages_since(RequestMessagesSince packet) {
+        this.message_server.requestMessagesSince(packet.getSince(), packet.getUUID1(), packet.getUUID2(), packet.getAddress());
     }
 
     private void on_user_packet(UserPacket packet) throws SQLException {
@@ -103,10 +115,6 @@ public class Diffusion extends Thread {
         this.socket.send(connect_message.to_packet());
     }
 
-    public void quit() {
-        this.socket.close();
-    }
-
     public void diffuse_new_user(User user, InetAddress address) throws IOException {
         UserPacket user_packet = new UserPacket(user, address);
         this.socket.send(user_packet.to_packet());
@@ -115,5 +123,10 @@ public class Diffusion extends Thread {
     public void diffuse_uuid(UUID uuid, InetAddress address) throws IOException {
         ChangeUUIDPacket change_uuid_packet = new ChangeUUIDPacket(uuid, address);
         this.socket.send(change_uuid_packet.to_packet());
+    }
+
+    public void requestMessageSince(Date date, UUID uuid1, UUID uuid2) throws IOException {
+        RequestMessagesSince request_message_since_packet = new RequestMessagesSince(this.getBROADCAST_ADDRESS(), date, uuid1, uuid2);
+        this.socket.send(request_message_since_packet.to_packet());
     }
 }

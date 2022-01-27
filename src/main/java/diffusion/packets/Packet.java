@@ -37,6 +37,9 @@ public abstract class Packet {
             case ChangeUUID -> {
                 return new ChangeUUIDPacket(packet);
             }
+            case RequestMessagesSince -> {
+                return new RequestMessagesSince(packet);
+            }
             default -> {
                 return new IllegalPacket(packet);
             }
@@ -71,6 +74,7 @@ public abstract class Packet {
         ChangeNickname,
         ChangeUUID,
         UserPacket,
+        RequestMessagesSince,
         Illegal;
 
         private static PacketKind from_byte(byte value) {
@@ -89,6 +93,9 @@ public abstract class Packet {
                 }
                 case 0x05 -> {
                     return UserPacket;
+                }
+                case 0x06 -> {
+                    return RequestMessagesSince;
                 }
                 default -> {
                     return Illegal;
@@ -112,6 +119,9 @@ public abstract class Packet {
                 }
                 case UserPacket -> {
                     return 0x05;
+                }
+                case RequestMessagesSince -> {
+                    return 0x06;
                 }
                 default -> {
                     return 0x00;

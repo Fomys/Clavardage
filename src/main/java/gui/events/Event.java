@@ -1,3 +1,4 @@
 package gui.events;
 
-public interface Event {}
+public interface Event {
+}
