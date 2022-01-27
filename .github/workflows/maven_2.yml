@@ -30,7 +30,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: release
+        tag_name: ${{ env.RELEASE_VERSION }}
         release_name: Build ${{ env.RELEASE_VERSION }}-release
         prerelease: false
         draft: false
