@@ -6,6 +6,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
 import static diffusion.UUIDUtils.asBytes;
@@ -66,5 +67,18 @@ public class ChangeNicknamePacket extends Packet {
 
     public UUID getUUID() {
         return this.uuid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChangeNicknamePacket that = (ChangeNicknamePacket) o;
+        return Objects.equals(uuid, that.uuid) && Objects.equals(getNickname(), that.getNickname());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, getNickname());
     }
 }

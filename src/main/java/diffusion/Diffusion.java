@@ -126,7 +126,7 @@ public class Diffusion extends Thread {
     }
 
     public void requestMessageSince(Date date, UUID uuid1, UUID uuid2) throws IOException {
-        RequestMessagesSince request_message_since_packet = new RequestMessagesSince(this.getBROADCAST_ADDRESS(), date, uuid1, uuid2);
+        RequestMessagesSince request_message_since_packet = new RequestMessagesSince( date, uuid1, uuid2,this.getBROADCAST_ADDRESS());
         this.socket.send(request_message_since_packet.to_packet());
     }
 }
