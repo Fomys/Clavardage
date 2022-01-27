@@ -5,7 +5,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class Message implements Serializable, DatabaseObject {
@@ -31,7 +33,51 @@ public class Message implements Serializable, DatabaseObject {
         this.uuid = uuid;
     }
 
-    @Override
+    public static List<Message> All(Connection connection) {
+        List<Message> results = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT `uuid`, `from`, `to`, `message`, `date` FROM messages;");
+            ResultSet request_result = statement.executeQuery();
+            while (request_result.next()) {
+                results.add(new Message(
+                        UUID.fromString(request_result.getString("from")),
+                        UUID.fromString(request_result.getString("to")),
+                        request_result.getString("message"),
+                        request_result.getDate("date"),
+                        UUID.fromString(request_result.getString("uuid"))
+                ));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return results;
+    }
+    public static List<Message> AllBetween(Connection connection, UUID uuid1, UUID uuid2) {
+        List<Message> results = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT `uuid`, `from`, `to`, `message`, `date` " +
+                    "FROM messages WHERE (`from` = ? AND `to` = ?) OR (`to` = ? AND `from` = ?) ORDER BY `date`;");
+            statement.setString(1, uuid1.toString());
+            statement.setString(2, uuid2.toString());
+            statement.setString(3, uuid1.toString());
+            statement.setString(4, uuid2.toString());
+            ResultSet request_result = statement.executeQuery();
+            while (request_result.next()) {
+                results.add(new Message(
+                        UUID.fromString(request_result.getString("from")),
+                        UUID.fromString(request_result.getString("to")),
+                        request_result.getString("message"),
+                        request_result.getDate("date"),
+                        UUID.fromString(request_result.getString("uuid"))
+                ));
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return results;
+    }
+
     public String toString() {
         return "Message{" +
                 "from='" + this.from + '\'' +
@@ -76,16 +122,12 @@ public class Message implements Serializable, DatabaseObject {
         this.to = to;
     }
 
-    public UUID GetUuid() {
+    public UUID getUUID() {
         return this.uuid;
     }
 
     public Date getDate() {
         return this.date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public String getContent() {

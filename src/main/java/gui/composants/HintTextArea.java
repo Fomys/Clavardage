@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-class HintTextArea extends JTextArea implements FocusListener {
+public class HintTextArea extends JTextArea implements FocusListener {
 
     private final String hint;
     private boolean showingHint;

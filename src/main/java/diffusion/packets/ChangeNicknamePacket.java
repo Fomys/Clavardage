@@ -33,7 +33,7 @@ public class ChangeNicknamePacket extends Packet {
         this.uuid = asUUID(Arrays.copyOfRange(packet.getData(), 1, 17));
         int nickname_len = packet.getData()[37] + 128;
         this.nickname = new String(Arrays.copyOfRange(packet.getData(), 18, nickname_len + 18), StandardCharsets.UTF_8);
-        System.out.println(this);
+
     }
 
 
@@ -43,7 +43,7 @@ public class ChangeNicknamePacket extends Packet {
 
     @Override
     public DatagramPacket to_packet() {
-        System.out.println("Send " + this);
+
         byte[] buffer = new byte[PACKET_LEN];
         buffer[0] = this.kind.to_byte();
         System.arraycopy(asBytes(this.uuid), 0, buffer, 1, 16);

@@ -19,7 +19,7 @@ public class User implements DatabaseObject {
     }
 
     public User(String username, String password) {
-        this.uuid = UUID.randomUUID();;
+        this.uuid = UUID.randomUUID();
         this.username = username;
         this.password = password;
     }
@@ -43,7 +43,7 @@ public class User implements DatabaseObject {
         PreparedStatement statement = connection.prepareStatement("SELECT `uuid` FROM `users` WHERE `uuid` = ?;");
         statement.setString(1, uuid.toString());
         ResultSet request_result = statement.executeQuery();
-        if(!request_result.next()) {
+        if (!request_result.next()) {
             statement = connection.prepareStatement("INSERT INTO `users` (uuid, username, password) VALUES (?, ?, ?);");
             statement.setString(1, this.uuid.toString());
             statement.setString(2, this.username);

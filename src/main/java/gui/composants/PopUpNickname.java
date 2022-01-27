@@ -1,26 +1,35 @@
 package gui.composants;
 
 import database.Database;
-import diffusion.Diffusion;
+import gui.Panel;
+import gui.events.ChangeNickname;
+import gui.events.Event;
 
 import javax.swing.*;
-import java.io.IOException;
 
-public class PopUpNickname {
-    public PopUpNickname(Database database, Diffusion diffusion) {
+public class PopUpNickname extends JPanel implements Panel {
+    private final Database database;
+    private final Panel parent;
+
+    public PopUpNickname(Panel parent, Database database) {
+        this.parent = parent;
+        this.database = database;
+
         JFrame jFrame = new JFrame();
 
-        String getMessage = JOptionPane.showInputDialog(jFrame, "Entrez votre nouveau pseudo");
-        try {
-            diffusion.connect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (database.checkNickname(getMessage)) {
-            database.setNickname(getMessage);
+        String new_nickname = JOptionPane.showInputDialog(jFrame, "Entrez votre nouveau pseudo");
+        if (database.checkNickname(new_nickname)) {
+            this.converge_event(new ChangeNickname(this.database.getUUID(), new_nickname));
         } else {
             JOptionPane.showMessageDialog(jFrame, "Ce pseudo est déjà pris");
         }
+    }
+
+    @Override
+    public void propagate_event(Event event) {}
+
+    @Override
+    public void converge_event(Event event) {
+        this.parent.converge_event(event);
     }
 }

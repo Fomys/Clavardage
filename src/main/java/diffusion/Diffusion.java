@@ -16,16 +16,17 @@ public class Diffusion extends Thread {
     public static int PORT = 10001;
     private final InetAddress BROADCAST_ADDRESS = Inet4Address.getByAddress(new byte[]{-1, -1, -1, -1});
     private final Database database;
-
-    public InetAddress getBROADCAST_ADDRESS() {return this.BROADCAST_ADDRESS;}
     private final DatagramSocket socket;
     private boolean running = true;
-
     public Diffusion(Database database) throws Exception {
         super("Diffusion");
         this.socket = new DatagramSocket(PORT, Inet4Address.getByAddress(new byte[]{0, 0, 0, 0}));
         this.socket.setBroadcast(true);
         this.database = database;
+    }
+
+    public InetAddress getBROADCAST_ADDRESS() {
+        return this.BROADCAST_ADDRESS;
     }
 
     public void disconnect() throws IOException {
@@ -34,10 +35,15 @@ public class Diffusion extends Thread {
         this.running = false;
     }
 
-    public void diffuse_nickname(String nickname) throws IOException {
-        this.database.setNickname(nickname);
-        ChangeNicknamePacket connect_message = new ChangeNicknamePacket(this.database.getUUID(), nickname, BROADCAST_ADDRESS);
-        this.socket.send(connect_message.to_packet());
+    public void diffuse_nickname(String nickname) {
+        if (this.database.getUUID() != null){
+            ChangeNicknamePacket connect_message = new ChangeNicknamePacket(this.database.getUUID(), nickname, BROADCAST_ADDRESS);
+            try {
+                this.socket.send(connect_message.to_packet());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void run() {

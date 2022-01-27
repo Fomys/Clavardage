@@ -21,7 +21,7 @@ public class ChangeUUIDPacket extends Packet {
     public ChangeUUIDPacket(DatagramPacket packet) {
         super(packet);
         this.uuid = asUUID(Arrays.copyOfRange(packet.getData(), 1, 17));
-            }
+    }
 
     @Override
     public DatagramPacket to_packet() {

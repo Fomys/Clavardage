@@ -7,7 +7,7 @@ public interface DatabaseObserver {
     default void on_message(Message message) {
     }
 
-    default void on_connect_user(UUID uuid) throws IOException {
+    default void on_connect_user(UUID uuid) {
     }
 
     default void on_disconnect_user(UUID uuid) {

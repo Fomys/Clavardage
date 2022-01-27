@@ -57,7 +57,7 @@ public class PopUpLogin {
     }
 
 
-    public static Boolean dialog(Database database, Diffusion diffusion) throws SQLException, IOException {
+    public static Boolean dialog(Database database, Diffusion diffusion) {
         try {
             diffusion.connect();
         } catch (IOException e) {
@@ -73,14 +73,23 @@ public class PopUpLogin {
 
             if (database.checkUser(username)) {
                 String password = ask_password(parent);
-                if(password == null) {
+                if (password == null) {
                     return false;
                 }
-                Boolean success = database.set_user(username, password);
+                Boolean success = null;
+                try {
+                    success = database.set_user(username, password);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
                 if (!success) {
                     JOptionPane.showMessageDialog(parent, "Mot de passe invalide !");
                 } else {
-                    diffusion.diffuse_uuid(database.getUUID(), diffusion.getBROADCAST_ADDRESS());
+                    try {
+                        diffusion.diffuse_uuid(database.getUUID(), diffusion.getBROADCAST_ADDRESS());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     diffusion.diffuse_nickname(username);
                 }
             } else {
@@ -93,10 +102,14 @@ public class PopUpLogin {
                     String password = ask_create_password(parent);
                     if (password != null) {
                         database.User user = new database.User(username, password);
-                        user.saveTo(database.getConnection());
-                        database.set_user(username, password);
-                        diffusion.diffuse_new_user(user, diffusion.getBROADCAST_ADDRESS());
-                        diffusion.diffuse_uuid(user.getUUID(), diffusion.getBROADCAST_ADDRESS());
+                        try {
+                            user.saveTo(database.getConnection());
+                            database.set_user(username, password);
+                            diffusion.diffuse_new_user(user, diffusion.getBROADCAST_ADDRESS());
+                            diffusion.diffuse_uuid(user.getUUID(), diffusion.getBROADCAST_ADDRESS());
+                        } catch (SQLException | IOException throwables) {
+                            throwables.printStackTrace();
+                        }
                         diffusion.diffuse_nickname(username);
                     }
                 }

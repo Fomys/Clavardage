@@ -12,7 +12,7 @@ public class PasswordDialog {
         String[] options = new String[]{"Valider", "Annuler"};
         int option = JOptionPane.showOptionDialog(parent, panel, title, JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-        if(option == 0) {
+        if (option == 0) {
             return String.valueOf(pass.getPassword());
         } else {
             return null;

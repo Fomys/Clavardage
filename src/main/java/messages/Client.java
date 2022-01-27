@@ -12,13 +12,14 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class Client extends Thread {
     private final ObjectOutputStream output_stream;
     private final ObjectInputStream input_stream;
     private final Socket socket;
-    private boolean running = true;
     private final Database database;
+    private boolean running = true;
 
     public Client(Socket socket, Database database) throws IOException {
         super("Client " + socket.getInetAddress());
@@ -39,7 +40,7 @@ public class Client extends Thread {
             try {
                 packet = (Packet) input_stream.readObject();
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                this.database.disconnect(this.socket.getInetAddress());
                 break;
             }
             this.packetHandler(packet);
@@ -60,7 +61,10 @@ public class Client extends Thread {
     }
 
     private void requestMessagesSinceHandler(RequestMessagesPacket packet) {
-        List<Message> messages = this.database.getMessagesFor(this.database.getReverseDirectory().get(this.socket.getInetAddress()), packet.getSince());
+        List<Message> messages = Message.AllBetween(
+                database.getConnection(),
+                packet.getUUID1(),
+                packet.getUUID2());
         for (Message message : messages) {
             try {
                 this.output_stream.writeObject(new MessagePacket(message));
@@ -75,12 +79,16 @@ public class Client extends Thread {
         this.database.receiveMessageFor(this.socket.getInetAddress(), packet.getMessage());
     }
 
-    void sendMessage(Message message) throws IOException {
+    void sendMessage(Message message) {
         this.database.sendMessageTo(this.socket.getInetAddress(), message);
-        this.output_stream.writeObject(new MessagePacket(message));
+        try {
+            this.output_stream.writeObject(new MessagePacket(message));
+        } catch (IOException e) {
+            this.database.disconnect(this.socket.getInetAddress());
+        }
     }
 
-    public void requestMessagesSince(Date since) throws IOException {
-        this.output_stream.writeObject(new RequestMessagesPacket(since));
+    public void requestMessagesSince(Date since, UUID uuid1, UUID uuid2) throws IOException {
+        this.output_stream.writeObject(new RequestMessagesPacket(since, uuid1, uuid2));
     }
 }

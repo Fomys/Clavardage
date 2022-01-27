@@ -14,8 +14,8 @@ import java.util.UUID;
 public class MessageServer extends Thread {
     private final ServerSocket socket;
     private final Database database;
-    private boolean running = true;
     private final HashMap<InetAddress, Client> clients;
+    private boolean running = true;
 
     public MessageServer(int port, Database database) throws IOException {
         super("MessageServer");
@@ -31,33 +31,44 @@ public class MessageServer extends Thread {
         }
     }
 
-    private Client getClient(InetAddress to) throws IOException {
+    private Client getClient(InetAddress to) {
         if (this.clients.containsKey(to)) {
             return this.clients.get(to);
         } else if (this.database.getConnected().getOrDefault(to, false)) {
-            Socket client_socket = new Socket(to, this.socket.getLocalPort());
-            Client client = new Client(client_socket, this.database);
-            this.clients.put(to, client);
-            client.start();
-            return client;
-        } else {
+            Socket client_socket = null;
+            try {
+                client_socket = new Socket(to, this.socket.getLocalPort());
+                Client client = new Client(client_socket, this.database);
+                this.clients.put(to, client);
+                client.start();
+                return client;
+            } catch (IOException e) {
+                this.database.disconnect(to);
+            }
+        }
             return null;
+
+    }
+
+    public void requestMessagesSince(Date since, UUID uuid1, UUID uuid2) {
+        for (Client client :
+                this.clients.values()) {
+            try {
+                if (client != null) {
+                    client.requestMessagesSince(since, uuid1, uuid2);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void requestMessagesSince(Date since, String to) throws IOException {
-        this.requestMessagesSince(since, this.database.getDirectory().get(to));
-    }
-
-    public void requestMessagesSince(Date since, InetAddress to) throws IOException {
-        Client client = this.getClient(to);
-        if (client != null) {
-            client.requestMessagesSince(since);
+    public void sendMessageTo(Message message, UUID to) {
+        try {
+            this.sendMessageTo(message, this.database.getDirectory().get(to));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    }
-
-    public void sendMessageTo(Message message, UUID to) throws IOException {
-        this.sendMessageTo(message, this.database.getDirectory().get(to));
     }
 
     public void sendMessageTo(Message message, InetAddress to) throws IOException {

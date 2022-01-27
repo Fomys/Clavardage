@@ -2,32 +2,38 @@
  * Created by JFormDesigner on Mon Dec 06 13:37:28 CET 2021
  */
 
-package gui.composants;
+package gui.composants.right;
 
+import database.Database;
 import database.Message;
-import messages.MessageServer;
+import gui.composants.ButtonIcon;
+import gui.composants.HintTextArea;
+import gui.events.ChangeSelectedUser;
+import gui.events.Event;
+import gui.Panel;
+import gui.events.SendMessage;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.io.IOException;
+import java.util.UUID;
 
-/**
- * @author unknown
- */
-public class SendPanel extends JPanel {
+public class SendPanel extends JPanel implements Panel {
+    private final Database database;
+    private final Panel parent;
     private JButton attach_button;
     private JTextArea editor_pane;
     private JScrollPane editor_scroll;
     private JButton send_button;
-    private final MessageServer message_server;
+    private UUID current_user;
 
-    public SendPanel(MessageServer message_server) throws IOException {
-        this.message_server = message_server;
-        initComponents();
+    public SendPanel(Panel parent, Database database) {
+        this.parent = parent;
+        this.database = database;
+        this.initComponents();
     }
 
-    private void initComponents() throws IOException {
+    protected void initComponents() {
         this.attach_button = new JButton();
         this.editor_scroll = new JScrollPane();
         this.editor_pane = new HintTextArea(" Ecrire un message..");
@@ -69,14 +75,20 @@ public class SendPanel extends JPanel {
                 new Insets(0, 0, 0, 0), 0, 0));
 
         this.send_button.addActionListener(e -> {
-            try {
-                this.message_server.sendMessageTo(new Message(this.editor_pane.getText()), UserList.getCurrentUser().getUUID());
-                editor_pane.setText("");
-            } catch (IOException e1) {
-                // TODO Afficher l'erreur proprement
-                e1.printStackTrace();
+            if(this.current_user != null) {
+                this.converge_event(new SendMessage(new Message(this.editor_pane.getText()), this.current_user));
             }
         });
     }
 
+    public void propagate_event(Event event) {
+        if (event instanceof ChangeSelectedUser) {
+            this.current_user = ((ChangeSelectedUser) event).getUUID();
+        }
+    }
+
+    @Override
+    public void converge_event(Event event) {
+        this.parent.converge_event(event);
+    }
 }

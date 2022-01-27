@@ -1,4 +1,4 @@
-package gui.composants;
+package gui.composants.left;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -6,18 +6,18 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Objects;
 
-public class ButtonIcon extends JButton {
+public class ProfilePicture extends JLabel {
+
+    private final int imgSize; // pour stocker la taille de l'image
 
     /*
      * Paramètres :
      * 	- String way : le chemin de la photo, ici c'est souvent "./images/nomPhotos.png"
      * 	- int btnSize : la taille de l'image
-     * 	- x,y,size : position et la dimension (parce que carré tavu)
-     * 	- Composant parent
      */
-    public ButtonIcon(String way, int imgSize) {
+    public ProfilePicture(String way, int imgSize) {
+        this.imgSize = imgSize;
         this.setBorder(BorderFactory.createEmptyBorder());
-        this.setContentAreaFilled(false);
         Image imgSettings = null;
         try {
             imgSettings = ImageIO.read(Objects.requireNonNull(getClass().getResource(way)));
@@ -28,5 +28,6 @@ public class ButtonIcon extends JButton {
         imgSettings = imgSettings.getScaledInstance(imgSize, imgSize, Image.SCALE_SMOOTH);
         this.setIcon(new ImageIcon(imgSettings));
     }
+
 
 }

@@ -5,34 +5,34 @@
 package gui.composants;
 
 import database.Database;
-import diffusion.Diffusion;
-import messages.MessageServer;
+import gui.composants.left.LeftPanel;
+import gui.composants.right.RightPanel;
+import gui.events.Event;
+import gui.Panel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 /**
  * @author unknown
  */
-public class MainPanel extends JPanel {
+public class MainPanel extends JPanel implements Panel {
+    private final Panel parent;
     private final Database database;
-    private final MessageServer message_server;
-    private final Diffusion diffusion;
     private LeftPanel left_panel;
     private RightPanel right_panel;
 
-    public MainPanel(Database database, MessageServer message_server, Diffusion diffusion) throws IOException {
+    public MainPanel(Panel parent, Database database) {
+        this.parent = parent;
         this.database = database;
-        this.message_server = message_server;
-        this.diffusion = diffusion;
         initComponents();
     }
 
-    private void initComponents() throws IOException {
-        this.left_panel = new LeftPanel(this.database, this.diffusion);
-        this.right_panel = new RightPanel(this.database, this.message_server);
+    public void initComponents() {
+        this.setBackground(new Color(44, 43, 42));
 
+        this.left_panel = new LeftPanel(this, this.database);
+        this.right_panel = new RightPanel(this, this.database);
 
         this.setLayout(new GridBagLayout());
         ((GridBagLayout) this.getLayout()).columnWidths = new int[]{350, 0, 0};
@@ -40,14 +40,17 @@ public class MainPanel extends JPanel {
         ((GridBagLayout) this.getLayout()).columnWeights = new double[]{0.0, 1.0, 1.0E-4};
         ((GridBagLayout) this.getLayout()).rowWeights = new double[]{1.0, 1.0E-4};
 
-
         this.add(this.left_panel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
         this.add(this.right_panel, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-
-        this.setBackground(new Color(44, 43, 42));
     }
 
-    public LeftPanel get_left_panel() {
-        return this.left_panel;
+    public void propagate_event(Event event) {
+        this.left_panel.propagate_event(event);
+        this.right_panel.propagate_event(event);
+    }
+
+    @Override
+    public void converge_event(Event event) {
+        this.parent.converge_event(event);
     }
 }

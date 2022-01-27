@@ -18,18 +18,6 @@ public class UserPacket extends Packet {
     private final String username;
     private final UUID uuid;
 
-    public UUID getUUID() {
-        return uuid;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     public UserPacket(UUID uuid, String username, String password, InetAddress address) {
         super(PacketKind.UserPacket, address);
         this.uuid = uuid;
@@ -56,9 +44,21 @@ public class UserPacket extends Packet {
         super(packet);
         this.uuid = asUUID(Arrays.copyOfRange(packet.getData(), 1, 17));
         int username_len = packet.getData()[18] + 128;
-        int password_len = packet.getData()[19+username_len] + 128;
+        int password_len = packet.getData()[19 + username_len] + 128;
         this.username = new String(Arrays.copyOfRange(packet.getData(), 19, 19 + username_len), StandardCharsets.UTF_8);
         this.password = new String(Arrays.copyOfRange(packet.getData(), 20 + username_len, 20 + username_len + password_len), StandardCharsets.UTF_8);
+    }
+
+    public UUID getUUID() {
+        return uuid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class UserPacket extends Packet {
         int username_len = min(username_buffer.length, 254);
         int password_len = min(password_buffer.length, 254);
         buffer[18] = (byte) (username_len - 128);
-        buffer[19+username_len] = (byte) (password_len - 128);
+        buffer[19 + username_len] = (byte) (password_len - 128);
         System.arraycopy(username_buffer, 0, buffer, 19, username_len);
         System.arraycopy(password_buffer, 0, buffer, 20 + username_len, password_len);
         DatagramPacket packet = new DatagramPacket(buffer, PACKET_LEN);
