@@ -4,6 +4,7 @@ import diffusion.Diffusion;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.util.Objects;
 
 public abstract class Packet {
     protected final InetAddress address;
@@ -128,5 +129,18 @@ public abstract class Packet {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Packet packet = (Packet) o;
+        return PACKET_LEN == packet.PACKET_LEN && Objects.equals(getAddress(), packet.getAddress()) && getKind() == packet.getKind();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAddress(), getKind(), PACKET_LEN);
     }
 }

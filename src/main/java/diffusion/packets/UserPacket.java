@@ -7,6 +7,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
 import static diffusion.UUIDUtils.asBytes;
@@ -91,5 +92,18 @@ public class UserPacket extends Packet {
 
     public User to_user() {
         return new User(this.uuid, this.username, this.password);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserPacket that = (UserPacket) o;
+        return Objects.equals(getPassword(), that.getPassword()) && Objects.equals(getUsername(), that.getUsername()) && Objects.equals(uuid, that.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPassword(), getUsername(), uuid);
     }
 }

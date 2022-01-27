@@ -5,6 +5,7 @@ import diffusion.Diffusion;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
 import static diffusion.UUIDUtils.asBytes;
@@ -36,5 +37,18 @@ public class ChangeUUIDPacket extends Packet {
 
     public UUID getUUID() {
         return uuid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChangeUUIDPacket that = (ChangeUUIDPacket) o;
+        return Objects.equals(uuid, that.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
     }
 }

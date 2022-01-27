@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 import static diffusion.UUIDUtils.asBytes;
@@ -17,7 +18,7 @@ public class RequestMessagesSince extends Packet {
     private final UUID uuid1;
     private final UUID uuid2;
 
-    public RequestMessagesSince(InetAddress address, Date since, UUID uuid1, UUID uuid2) {
+    public RequestMessagesSince(Date since, UUID uuid1, UUID uuid2, InetAddress address) {
         super(PacketKind.RequestMessagesSince, address);
         this.since = since;
         this.uuid1 = uuid1;
@@ -58,5 +59,19 @@ public class RequestMessagesSince extends Packet {
 
     public UUID getUUID2() {
         return this.uuid2;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        RequestMessagesSince that = (RequestMessagesSince) o;
+        return Objects.equals(getSince(), that.getSince()) && Objects.equals(uuid1, that.uuid1) && Objects.equals(uuid2, that.uuid2);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getSince(), uuid1, uuid2);
     }
 }
